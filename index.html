@@ -2,201 +2,218 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sarjana - Portal Berita</title>
-  <meta name="description" content="Berita terkini dan terpercaya dari portal Sarjana">
-  <meta property="og:title" content="Sarjana - Portal Berita" />
-  <meta property="og:description" content="Berita terkini dan terpercaya dari portal Sarjana" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://sarjana.web.id" />
-  <meta property="og:image" content="https://example.com/logo.png" />
+  <title>Loading...</title>
+  <meta name="description" content="Memuat..." />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap">
   <style>
-    body {
+    :root {
+      --warna-utama: #1e1e1e;
+      --warna-teks: #ffffff;
+      --warna-aksen: #ff5722;
+      --warna-background: #121212;
+      --max-width: 1200px;
+    }
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background: var(--warna-background);
+      color: var(--warna-teks);
+      line-height: 1.6;
     }
     header {
+      background: var(--warna-utama);
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    header .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--warna-aksen);
+    }
+    nav {
+      margin-top: 0.5rem;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    nav ul li {
+      position: relative;
+    }
+    nav ul li a {
+      color: var(--warna-teks);
+      text-decoration: none;
+    }
+    nav ul li ul {
+      display: none;
+      position: absolute;
+      background: var(--warna-utama);
+      padding: 0.5rem;
+      top: 100%;
+      left: 0;
+    }
+    nav ul li:hover ul {
+      display: block;
+    }
+    main {
+      max-width: var(--max-width);
+      margin: 2rem auto;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 0 1rem;
+    }
+    .konten, .sidebar {
+      flex: 1;
+      min-width: 300px;
+    }
+    .berita {
+      background: #1c1c1c;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--warna-aksen);
+    }
+    .berita img {
+      width: 100%;
+      height: auto;
+    }
+    .berita h2 {
+      margin: 0.5rem 0;
+    }
+    footer {
+      background: var(--warna-utama);
+      padding: 1rem;
       text-align: center;
       margin-top: 2rem;
     }
-    header img {
-      max-width: 200px;
-      height: auto;
-    }
-    #searchBar {
-      margin: 2rem 0;
-      width: 100%;
-      max-width: 500px;
-    }
-    #searchBar input {
-      width: 100%;
-      padding: 1rem;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    #beritaList {
-      width: 100%;
-      max-width: 800px;
-    }
-    .berita-item {
-      border-bottom: 1px solid #eee;
-      padding: 1rem 0;
-    }
-    .berita-item h3 {
-      margin: 0;
-      font-size: 1.2rem;
-    }
-    .berita-item img {
-      max-width: 100%;
-      height: auto;
-      margin-top: 0.5rem;
-      border-radius: 8px;
-    }
-    .berita-item p {
-      margin: 0.5rem 0 0;
-    }
-    footer {
-      margin-top: 3rem;
-      padding: 1rem;
-      text-align: center;
-      color: #777;
-      font-size: 0.9rem;
-    }
-    #beritaDetail {
-      width: 100%;
-      max-width: 800px;
-      display: none;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    #beritaDetail h2 {
-      margin: 0;
-    }
-    #backBtn {
-      background: #eee;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      align-self: flex-start;
+    @media (max-width: 768px) {
+      nav ul {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <img id="logo" src="" alt="Logo Sarjana" />
-  </header>  <div id="searchBar">
-    <input type="text" id="searchInput" placeholder="Cari berita..." />
-  </div>  <div id="beritaList"></div>
-  <div id="beritaDetail">
-    <button id="backBtn">&larr; Kembali</button>
-    <h2 id="beritaJudul"></h2>
-    <img id="beritaGambar" src="" alt="" style="display: none;" />
-    <div id="beritaIsi"></div>
-    <small id="beritaTanggal"></small>
-  </div>  <footer>
-    &copy; 2025 Sarjana - Semua Hak Dilindungi
+    <div class="logo" id="site-name">Loading...</div>
+    <nav>
+      <ul id="menu-nav"></ul>
+    </nav>
+  </header>  <main>
+    <div class="konten">
+      <section id="slider"></section>
+      <section id="daftar-berita"></section>
+    </div>
+    <aside class="sidebar">
+      <h3>Berita Populer</h3>
+      <div id="berita-populer"></div>
+    </aside>
+  </main>  <footer>
+    <div id="footer-info">&copy; <span id="tahun"></span> Loading...</div>
   </footer>  <script>
-    const API_KEY = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
-    const SPREADSHEET_ID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-    const sheetBerita = "Live Website";
-    const sheetConfig = "Config";
+    const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+    const apiKey = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
+    const configSheet = "Config";
+    const dataSheet = "Live Website";
 
-    const beritaList = document.getElementById("beritaList");
-    const searchInput = document.getElementById("searchInput");
-    const logoImg = document.getElementById("logo");
-    const beritaDetail = document.getElementById("beritaDetail");
-    const beritaJudul = document.getElementById("beritaJudul");
-    const beritaIsi = document.getElementById("beritaIsi");
-    const beritaGambar = document.getElementById("beritaGambar");
-    const beritaTanggal = document.getElementById("beritaTanggal");
-    const backBtn = document.getElementById("backBtn");
-
-    let semuaData = [];
-
-    async function fetchSheet(sheetName) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
+    async function fetchSheet(sheet) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheet}?key=${apiKey}`;
       const res = await fetch(url);
       const data = await res.json();
       return data.values;
     }
 
-    function tampilkanDaftarBerita(data, query = "") {
-      beritaList.innerHTML = "";
-      beritaList.style.display = "block";
-      beritaDetail.style.display = "none";
-
-      const items = data.slice(1)
-        .filter(row => row[6] === "Publish" && row[0].toLowerCase().includes(query.toLowerCase()))
-        .sort((a, b) => new Date(b[7]) - new Date(a[7]));
-
-      items.forEach(row => {
-        const [judul, label, gambar, isi, slug, meta, status, tanggal, type] = row;
-        const item = document.createElement("div");
-        item.className = "berita-item";
-        item.innerHTML = `
-          <h3><a href="/${slug}" data-slug="${slug}">${judul}</a></h3>
-          ${gambar ? `<img src="${gambar}" alt="${judul}" />` : ""}
-          <p>${isi.slice(0, 150)}...</p>
-          <small>${tanggal}</small>
-        `;
-        beritaList.appendChild(item);
-      });
+    function buatSlug(teks) {
+      return teks.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
     }
 
-    function tampilkanDetailBerita(slug) {
-      const data = semuaData.slice(1).find(row => row[4] === slug);
-      if (data) {
-        const [judul, label, gambar, isi, slugLink, meta, status, tanggal] = data;
-        beritaJudul.textContent = judul;
-        beritaIsi.innerHTML = isi;
-        beritaTanggal.textContent = tanggal;
-        if (gambar) {
-          beritaGambar.src = gambar;
-          beritaGambar.style.display = "block";
-        } else {
-          beritaGambar.style.display = "none";
-        }
-        beritaList.style.display = "none";
-        beritaDetail.style.display = "flex";
-        document.title = judul + " - Sarjana";
+    async function loadWebsite() {
+      const config = await fetchSheet(configSheet);
+      const konten = await fetchSheet(dataSheet);
+
+      const pengaturan = Object.fromEntries(config);
+
+      document.getElementById("site-name").textContent = pengaturan["Nama Website"] || "Website Berita";
+      document.title = pengaturan["Nama Website"];
+      document.querySelector("meta[name='description']").setAttribute("content", pengaturan["Deskripsi"] || "Website berita terbaru dan terpercaya.");
+
+      // Warna tema
+      if (pengaturan["Warna Tema"]) {
+        document.documentElement.style.setProperty('--warna-utama', pengaturan["Warna Tema"]);
       }
+
+      // Menu navigasi
+      try {
+        const menu = JSON.parse(pengaturan["Menu"]);
+        const navUl = document.getElementById("menu-nav");
+        menu.forEach(item => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = item.link || "#";
+          a.textContent = item.nama;
+          li.appendChild(a);
+          if (item.submenu && Array.isArray(item.submenu)) {
+            const subUl = document.createElement('ul');
+            item.submenu.forEach(sub => {
+              const subLi = document.createElement('li');
+              const subA = document.createElement('a');
+              subA.href = sub.link || "#";
+              subA.textContent = sub.nama;
+              subLi.appendChild(subA);
+              subUl.appendChild(subLi);
+            });
+            li.appendChild(subUl);
+          }
+          navUl.appendChild(li);
+        });
+      } catch (e) {}
+
+      // Slider featured
+      const slider = document.getElementById("slider");
+      const featured = konten.filter(r => r[8] && r[8].toLowerCase() === "featured");
+      slider.innerHTML = featured.map(b => `
+        <div class="berita">
+          <img src="${b[2]}" alt="${b[0]}"/>
+          <h2>${b[0]}</h2>
+        </div>
+      `).join("");
+
+      // Berita terbaru
+      const daftar = document.getElementById("daftar-berita");
+      const terbaru = konten.filter(r => r[6] !== "hidden").slice(0, 10);
+      daftar.innerHTML = terbaru.map(b => `
+        <div class="berita">
+          <img src="${b[2]}" alt="${b[0]}"/>
+          <h2><a href="berita.html?slug=${b[4]}">${b[0]}</a></h2>
+          <p>${b[5]}</p>
+        </div>
+      `).join("");
+
+      // Populer
+      const populer = konten.filter(r => r[8] && r[8].toLowerCase() === "populer");
+      const populerBox = document.getElementById("berita-populer");
+      populerBox.innerHTML = populer.map(b => `<p><a href="berita.html?slug=${b[4]}">${b[0]}</a></p>`).join("");
+
+      // Footer
+      document.getElementById("footer-info").innerHTML = `&copy; <span id='tahun'>${new Date().getFullYear()}</span> ${pengaturan["Nama Website"]}`;
     }
 
-    async function loadConfig() {
-      const config = await fetchSheet(sheetConfig);
-      config.slice(1).forEach(([fungsi, value]) => {
-        if (fungsi === "logo") logoImg.src = value;
-        if (fungsi === "meta_deskripsi") {
-          document.querySelector("meta[name='description']").setAttribute("content", value);
-          document.querySelector("meta[property='og:description']").setAttribute("content", value);
-        }
-      });
+    loadWebsite();
+  </script>  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "NewsMediaOrganization",
+      "name": "Sarjana Berita",
+      "url": "https://sarjana.web.id",
+      "logo": "https://via.placeholder.com/200x100?text=Logo"
     }
-
-    async function init() {
-      semuaData = await fetchSheet(sheetBerita);
-      const slug = window.location.pathname.split("/").pop();
-      if (slug && slug !== "" && slug !== "index.html") {
-        tampilkanDetailBerita(slug);
-      } else {
-        tampilkanDaftarBerita(semuaData);
-      }
-      searchInput.addEventListener("input", () => tampilkanDaftarBerita(semuaData, searchInput.value));
-    }
-
-    backBtn.addEventListener("click", () => {
-      history.pushState({}, "", "/");
-      tampilkanDaftarBerita(semuaData);
-    });
-
-    loadConfig();
-    init();
   </script></body>
 </html>
