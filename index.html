@@ -1,0 +1,575 @@
+
+<!--
+@Project: Learnify
+@Author/Programmer: Syauqi Zaidan Khairan Khalaf
+@URL: syauqi.js.org
+Author E-mail: Zaidanline67@Gmail.com
+
+@About-Learnify :
+Web Edukasi Open Source yang
+dibuat oleh Syauqi Zaidan Khairan Khalaf.
+Learnify adalah Web edukasi yang dilengkapi video, materi, dan soal ( Coming soon )
+yang didesign semenarik dan sesimple mungkin. Learnify dibuat ditujukan agar para siswa
+dan guru dapat terus belajar dan mengajar dimana saja dan kapan saja.
+-->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="https://programmer.smkn1ciamis.id/learnify/assets/img/favicon.png" type="image/png">
+    <title>Learnify - Belajar Dimana Saja & Kapan Saja !</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/linericon/style.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/lightbox/simpleLightbox.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/nice-select/css/nice-select.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/animate-css/animate.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/vendors/popup/magnific-popup.css">
+    <!-- main css -->
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/css/style.css">
+    <link rel="stylesheet" href="https://programmer.smkn1ciamis.id/learnify/assets/css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.10.4/dist/sweetalert2.all.min.js"></script>
+    <script src="https://programmer.smkn1ciamis.id/learnify/assets/js/jquery-3.3.1.min.js"></script>
+    <script src="https://programmer.smkn1ciamis.id/learnify/assets/js/popper.js"></script>
+    <script src="https://programmer.smkn1ciamis.id/learnify/assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(()=>{
+        $("#nav").addClass('active')
+      })
+    </script>
+</head>
+
+<body>
+
+    <!--================Header Menu Area =================-->
+    <header class="header_area">
+        <div class="top_menu row m0">
+            <div class="container">
+                <div class="float-left">
+                    <ul class="list header_social">
+                        <li><a href="https://www.facebook.com/zaidan.syauqi.9"><i class="fa fa-facebook"></i></a></li>
+                        <li><a href="https://twitter.com/syauqykhairan"><i class="fa fa-twitter"></i></a></li>
+                        <li><a href="https://dribbble.com/syauqyzaidan"><i class="fa fa-dribbble"></i></a></li>
+                        <li><a href="https://www.behance.net/syaauqizaaidan"><i class="fa fa-behance"></i></a></li>
+                    </ul>
+                </div>
+                <div class="float-right">
+                    <a class="dn_btn" href="tel:+6287830016267">087830016267</a>
+                    <a class="dn_btn" href="mailto:learnifyedu@gmail.com">learnifyedu@gmail.com</a>
+                </div>
+            </div>
+        </div>
+        <div class="main_menu">
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container">
+                    <!-- Brand and toggle get grouped for better mobile display -->
+                    <a class="navbar-brand logo_h" href="https://programmer.smkn1ciamis.id/learnify/welcome"><img
+                            src="https://programmer.smkn1ciamis.id/learnify/assets/img/logo.png" alt=""></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- Collect the nav links, forms, and other content for toggling -->
+                    <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav menu_nav ml-auto">
+                            <li class="nav-item" id="nav"><a class="nav-link" href="https://programmer.smkn1ciamis.id/learnify/welcome">Beranda</a></li>
+                            <li class="nav-item" id="navtentang"><a class="nav-link" href="https://programmer.smkn1ciamis.id/learnify/welcome/tentang">Tentang</a>
+                            </li>
+                            <li class="nav-item submenu dropdown" id="navpelajaran">
+                                <a href="https://programmer.smkn1ciamis.id/learnify/welcome/pelajaran" class="nav-link dropdown-toggle"
+                                    role="button" aria-haspopup="true" aria-expanded="false">Pelajaran</a>
+                            </li>
+                            <li class="nav-item" id="navkontak"><a class="nav-link" href="https://programmer.smkn1ciamis.id/learnify/welcome/kontak">Kontak</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal"
+                                    data-target="#exampleModalCenter">Masuk</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <!--================ END Header Menu Area =================-->
+<!--
+@Project: Learnify
+@Author/Programmer: Syauqi Zaidan Khairan Khalaf
+@URL: syauqi.js.org
+Author E-mail: Zaidanline67@Gmail.com
+
+@About-Learnify :
+Web Edukasi Open Source yang
+dibuat oleh Syauqi Zaidan Khairan Khalaf.
+Learnify adalah Web edukasi yang dilengkapi video, materi, dan soal ( Coming soon )
+yang didesign semenarik dan sesimple mungkin. Learnify dibuat ditujukan agar para siswa
+dan guru dapat terus belajar dan mengajar dimana saja dan kapan saja.
+-->
+
+
+<!--================Home Banner Area =================-->
+<section class="home_banner_area">
+    <div class="banner_inner d-flex align-items-center">
+        <div class="overlay bg-parallax" data-stellar-ratio="0.9" data-stellar-vertical-offset="0" data-background="">
+        </div>
+        <div class="container">
+            <div class="banner_content text-center">
+                <h3>Belajar Dimana Saja & Kapan Saja <br /> Mudah Dengan Learnify</h3>
+                <p>Dengan Learnify kemudahan kegiatan belajar mengajar dapat terpenuhi. Para guru dan siswa dapat
+                    belajar meski banyak halangan atau rintangan. Pembelajaran Terstruktur dan Efektif hanya di
+                    Learnify! Nikmati kemudahan belajar dan materi terlengkap dari kami! </p>
+                <a class="main_btn" href="https://programmer.smkn1ciamis.id/learnify/user/registration#registration">Daftar Sekarang</a>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Home Banner Area =================-->
+
+
+<!--================Finance Area =================-->
+<section class="finance_area">
+    <div class="container">
+        <div class="finance_inner row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="finance_item">
+                    <div class="media">
+                        <div class="d-flex">
+                            <i class="lnr lnr-rocket"></i>
+                        </div>
+                        <div class="media-body">
+                            <h5>Cepat & <br />Mudah</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="finance_item">
+                    <div class="media">
+                        <div class="d-flex">
+                            <i class="lnr lnr-earth"></i>
+                        </div>
+                        <div class="media-body">
+                            <h5>Kompetensi <br />Internasional</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="finance_item">
+                    <div class="media">
+                        <div class="d-flex">
+                            <i class="lnr lnr-smile"></i>
+                        </div>
+                        <div class="media-body">
+                            <h5>User <br /> Friendly</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="finance_item">
+                    <div class="media">
+                        <div class="d-flex">
+                            <i class="lnr lnr-tag"></i>
+                        </div>
+                        <div class="media-body">
+                            <h5>Simple & <br />Tinggal Belajar!</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Finance Area =================-->
+
+
+<!--================Courses Area =================-->
+<section class="courses_area p_40">
+    <div class="container">
+        <div class="main_title">
+            <h2>Pelajaran yang tersedia di Learnify</h2>
+            <p>Dibawah ini merupakan mata pelajaran yang tersedia di website Learnify. Tiap kelas mempunyai
+                materi yang berbeda namun dengan mata pelajaran yang sama. Oleh karena itu nikmati materi dan selamat
+                belajar! tunggu update selanjutnya untuk penambahan mata pelajaran!</p>
+        </div>
+        <div class="row courses_inner">
+            <div class="col-lg-9">
+                <div class="grid_inner">
+                    <div class="grid_item wd55">
+                        <div class="courses_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/courses/course-1.jpg" alt="">
+                            <div class="hover_text">
+                                <a class="cat" href="#">Gratis</a>
+                                <a href="javaScript:void(0);">
+                                    <h4>Kelas Matematika Gratis</h4>
+                                </a>
+                                <ul class="list">
+                                    <li><a href="#"><i class="lnr lnr-users"></i>54</a></li>
+                                    <li><a href="#"><i class="lnr lnr-bubble"></i> 0</a></li>
+                                    <li><a href="#"><i class="lnr lnr-user"></i>Guru Matematika SMKN 1 Ciamis</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid_item wd44">
+                        <div class="courses_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/courses/course-2.jpg" alt="">
+                            <div class="hover_text">
+                                <a class="cat" href="#">Gratis</a>
+                                <a href="javaScript:void(0);">
+                                    <h4>Kelas IPA Gratis</h4>
+                                </a>
+                                <ul class="list">
+                                    <li><a href="#"><i class="lnr lnr-users"></i> 34</a></li>
+                                    <li><a href="#"><i class="lnr lnr-bubble"></i> 0</a></li>
+                                    <li><a href="#"><i class="lnr lnr-user"></i> Guru IPA SMKN 1 Ciamis</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid_item wd44">
+                        <div class="courses_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/courses/course-4.jpg" alt="">
+                            <div class="hover_text">
+                                <a class="cat" href="#">Gratis</a>
+                                <a href="javaScript:void(0);">
+                                    <h4>Kelas Bahasa Inggris Gratis</h4>
+                                </a>
+                                <ul class="list">
+                                    <li><a href="#"><i class="lnr lnr-users"></i> 63</a></li>
+                                    <li><a href="#"><i class="lnr lnr-bubble"></i> 0</a></li>
+                                    <li><a href="#"><i class="lnr lnr-user"></i> Guru English SMKN 1 Ciamis</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid_item wd55">
+                        <div class="courses_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/courses/course-5.jpg" alt="">
+                            <div class="hover_text">
+                                <a class="cat" href="#">Gratis</a>
+                                <a href="javaScript:void(0);">
+                                    <h4>Kelas Bahasa Indonesia Gratis</h4>
+                                </a>
+                                <ul class="list">
+                                    <li><a href="#"><i class="lnr lnr-users"></i> 24</a></li>
+                                    <li><a href="#"><i class="lnr lnr-bubble"></i> 0</a></li>
+                                    <li><a href="#"><i class="lnr lnr-user"></i> Guru Indonesia SMKN 1 Ciamis</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="course_item">
+                    <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/courses/course-3.jpg" alt="">
+                    <div class="hover_text">
+                        <a class="cat" href="#">Gratis</a>
+                        <a href="javaScript:void(0);">
+                            <h4>Kelas Pendidikan Agama Islam Gratis</h4>
+                        </a>
+                        <ul class="list">
+                            <li><a href="#"><i class="lnr lnr-users"></i> 35</a></li>
+                            <li><a href="#"><i class="lnr lnr-bubble"></i> 0</a></li>
+                            <li><a href="#"><i class="lnr lnr-user"></i> Guru Agama SMKN 1 Ciamis</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Courses Area =================-->
+
+
+<!--================Team Area =================-->
+<section class="team_area p_20">
+    <div class="container">
+        <div class="main_title">
+            <h2>Testimonial Para Siswa Learnify</h2>
+            <p>Berikut kesan dan pesan para siswa yang sudah menggunakan layanan website Learnify. Pastikan kamu
+                juga mencoba layanan kami ya! di Learnify semoga kamu menikmati semua materi dan pelajaran yang guru
+                guru kami buat! Selamat Belajar! </p>
+        </div>
+        <section class="testimonials_area p_20">
+            <div class="container">
+                <div class="testi_slider owl-carousel">
+                    <div class="item">
+                        <div class="testi_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/testimonials/testi-3.png" alt="">
+                            <h4>Syaauqi Zaaidan</h4>
+                            <ul class="list">
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                            <p>Materi nya lengkap, Gurunya keren keren semua dan dapat mudah dimengerti materinya.
+                                Pokoknya Semangat Learnify! Tetap jadi yang terbaik untuk SMKN 1 Ciamis. Semoga
+                                dengan adanya website learnify yang saya kembangkan ini ,siswa SMKN 1
+                                Ciamis dapat belajar dengan mudah dan para siswa dapat mencetak prestrasi untuk
+                                sekolah kita tercinta ini. Made with <span class="text-danger"> &#10084;</span> by
+                                syaauqi</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="testi_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/testimonials/testi-2.png" alt="">
+                            <h4>Taupik Hidayat</h4>
+                            <ul class="list">
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                            <p>Gurunya baik baik, materinya terstruktur dan materi nya terus update. Meski Guru
+                                tidak ada, kita masih bisa melihat materi yang dibuat guru di Website Learnify.
+                                Terima kasih Learnify!. Semoga dengan adanya learnify ini kita para siswa lebih
+                                produktif dan dapat meningkatkan kualitas SDM untuk negara kita tercinta ini yaitu
+                                negara Indonesia</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <div class="testi_item">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/testimonials/testi-1.png" alt="">
+                            <h4>Diki Ramdani</h4>
+                            <ul class="list">
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                            <p>Website yang sangat berguna untuk para siswa millenial. Karena dengan Learnify ini
+                                kalian bisa belajar dimana saja dan kapan saja! . Meski guru tidak bisa hadir atau
+                                kita tidak masuk sekolah karena sakit kita masih bisa belajar di website learnify
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+<!--================End Team Area =================-->
+
+
+<!--================Impress Area =================-->
+<section class="impress_area p_120">
+    <div class="container">
+        <div class="impress_inner text-center">
+            <h2>JADILAH PENGAJAR DAN MENGAJAR DI LEARNIFY</h2>
+            <p>Jika anda adalah seorang guru, anda dapat mendaftar dan masuk untuk mengajar para siswa di Learnify.
+                Tidak dikenakan biaya dan anda dapat segera mengajar setelah disetujui oleh pihak sekolah.
+            </p>
+            <a class="main_btn2" href="https://programmer.smkn1ciamis.id/learnify/welcome/guru">Login sebagai Guru</a>
+        </div>
+    </div>
+</section>
+<!--================End Impress Area =================--><!--
+@Project: Learnify
+@Author/Programmer: Syauqi Zaidan Khairan Khalaf
+@URL: syauqi.js.org
+Author E-mail: Zaidanline67@Gmail.com
+
+@About-Learnify :
+Web Edukasi Open Source yang
+dibuat oleh Syauqi Zaidan Khairan Khalaf.
+Learnify adalah Web edukasi yang dilengkapi video, materi, dan soal ( Coming soon )
+yang didesign semenarik dan sesimple mungkin. Learnify dibuat ditujukan agar para siswa
+dan guru dapat terus belajar dan mengajar dimana saja dan kapan saja.
+-->
+
+
+<!--================ Start footer Area  =================-->
+<footer class="footer-area p_60">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-2  col-md-6 col-sm-6">
+                <div class="single-footer-widget tp_widgets">
+                    <h6 class="footer_title">Tentang Kami</h6>
+                    <ul class="list">
+                        <li><a href="https://programmer.smkn1ciamis.id/learnify/welcome/tentang">Tentang Learnify</a></li>
+                        <li><a href="https://programmer.smkn1ciamis.id/learnify/welcome/materi">Materi Learnify</a></li>
+                        <li><a href="https://programmer.smkn1ciamis.id/learnify/welcome/kontak">Kontak Learnify</a></li>
+                        <li><a href="http://smkn1ciamis.id/">Website Resmi Sekolah</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-6 col-sm-6">
+                <div class="single-footer-widget tp_widgets">
+                    <h6 class="footer_title">Masuk - Sign in</h6>
+                    <ul class="list">
+                        <li><a href="#" data-toggle="modal" data-target="#exampleModalCenter">Untuk Siswa</a></li>
+                        <li><a href="https://programmer.smkn1ciamis.id/learnify/welcome/guru">Untuk Guru</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-6 col-sm-6">
+                <div class="single-footer-widget tp_widgets">
+                    <h6 class="footer_title">Pelajaran - Materi</h6>
+                    <ul class="list">
+                        <li><a href="javaScript:void(0);">IPA</a></li>
+                        <li><a href="javaScript:void(0);">Matematika</a></li>
+                        <li><a href="javaScript:void(0);">Bahasa Indonesia</a></li>
+                        <li><a href="javaScript:void(0);">Bahasa Inggris</a></li>
+                        <li><a href="javaScript:void(0);">Pendidikan Agama Islam</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2  col-md-6 col-sm-6">
+                <div class="single-footer-widget tp_widgets">
+                    <h6 class="footer_title">Tentang Developer</h6>
+                    <ul class="list">
+                        <li><a href="https://syauqizaidan.github.io">Syauqi Zaidan</a></li>
+                        <li><a href="#">Taupik Hidayat</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <h4 class="footer_title">Tentang Learnify</h4>
+                <p>
+                    Learnify adalah website pembelajaran dimana para siswa dapat belajar dimana saja dan kapan saja.
+                    dan guru dapat mengupload video dirinya sendiri sedang mengajar. sehingga tanpa takut adanya Jam
+                    kosong atau pun keadaan yang tidak terduga apapun karena Learnify dapat diakses dimana saja dan
+                    kapan saja untuk belajar.
+                </p>
+            </div>
+        </div>
+        <div class="row footer-bottom d-flex justify-content-between align-items-center">
+            <p class="col-lg-8 col-md-8 footer-text m-0">
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                Thank you colorlib for allow me to use this template. <br> Copyright &copy;<script>
+                document.write(new Date().getFullYear());
+                </script> All rights reserved | This template is made with <span class="text-danger"> &#10084;</span> by
+                <a href="https://colorlib.com" target="_blank">Colorlib</a> <br>
+                Made with <span class="text-danger"> &#10084;</span> by syaauqi
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+            <div class="col-lg-4 col-md-4 footer-social">
+                <a href="https://www.facebook.com/zaidan.syauqi.9"><i class="fa fa-facebook"></i></a>
+                <a href="https://twitter.com/syauqykhairan"><i class="fa fa-twitter"></i></a>
+                <a href="https://dribbble.com/syauqyzaidan"><i class="fa fa-dribbble"></i></a>
+                <a href="https://www.behance.net/syaauqizaaidan"><i class="fa fa-behance"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--================ End footer Area  =================-->
+
+
+<!-- Start Login Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title text-dark font-weight-bold" style="color:#212529 !important;"
+                    id="exampleModalCenterTitle">
+                    Learnify - Masuk Sekarang</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <br>
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <img src="https://programmer.smkn1ciamis.id/learnify/assets/img/modal-login-2.png"
+                                class="img-fluid img-responsive mx-auto " style="height: 350px;">
+                        </div>
+                        <div class=" col-md-6">
+                            <form action="https://programmer.smkn1ciamis.id/learnify/welcome/validateLogin" method="post">
+                                <div class="form-group">
+                                    <label class="label-font" for="
+                                        exampleFormControlInput1">
+                                        Email</label>
+                                    <input type="text" value="" class="form-control"
+                                        name="email" autocomplete="off" id="email"
+                                        placeholder="Masukan email mu disini ..">
+                                        <small class="text-danger"></small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="label-font" for="
+                                        exampleFormControlInput1">
+                                        Password</label>
+                                    <input type="password" name="password" class="form-control" id="password"
+                                        placeholder="Masukan password mu disini ..">
+                                    <small class="text-danger"></small>
+                                </div>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                    <label class="form-check-label" for="defaultCheck1">
+                                        Ingat saya.
+                                    </label>
+                                </div>
+                                <p class="terms">Dengan login anda
+                                    menyetujui
+                                    <i>privasi dan persyaratan ketentuan
+                                        hukum kami </i> .
+                                    belum punya akun? daftar <a href=" https://programmer.smkn1ciamis.id/learnify/user/registration">
+                                        disini.</a>
+                                </p>
+                                <button class="btn btn-block font-weight-bold"
+                                    style="background-color: #4dbf1c;color:white;font-size:18px;">Login
+                                    Sekarang!</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Login Modal -->
+
+
+<!-- Sweetaler Flashdata -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/js/stellar.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/lightbox/simpleLightbox.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/nice-select/js/jquery.nice-select.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/isotope/imagesloaded.pkgd.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/isotope/isotope.pkgd.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/owl-carousel/owl.carousel.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/popup/jquery.magnific-popup.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/js/jquery.ajaxchimp.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/counter-up/jquery.waypoints.min.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/vendors/counter-up/jquery.counterup.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/js/mail-script.js"></script>
+<script src="https://programmer.smkn1ciamis.id/learnify/assets/js/theme.js"></script>
+</body>
+
+</html>
