@@ -68,11 +68,23 @@
       color: #777;
       font-size: 0.9rem;
     }
-    @media (max-width: 600px) {
-      #searchBar input {
-        padding: 0.75rem;
-        font-size: 0.9rem;
-      }
+    #beritaDetail {
+      width: 100%;
+      max-width: 800px;
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    #beritaDetail h2 {
+      margin: 0;
+    }
+    #backBtn {
+      background: #eee;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      align-self: flex-start;
     }
   </style>
 </head>
@@ -81,7 +93,14 @@
     <img id="logo" src="" alt="Logo Sarjana" />
   </header>  <div id="searchBar">
     <input type="text" id="searchInput" placeholder="Cari berita..." />
-  </div>  <div id="beritaList"></div>  <footer>
+  </div>  <div id="beritaList"></div>
+  <div id="beritaDetail">
+    <button id="backBtn">&larr; Kembali</button>
+    <h2 id="beritaJudul"></h2>
+    <img id="beritaGambar" src="" alt="" style="display: none;" />
+    <div id="beritaIsi"></div>
+    <small id="beritaTanggal"></small>
+  </div>  <footer>
     &copy; 2025 Sarjana - Semua Hak Dilindungi
   </footer>  <script>
     const API_KEY = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
@@ -92,6 +111,14 @@
     const beritaList = document.getElementById("beritaList");
     const searchInput = document.getElementById("searchInput");
     const logoImg = document.getElementById("logo");
+    const beritaDetail = document.getElementById("beritaDetail");
+    const beritaJudul = document.getElementById("beritaJudul");
+    const beritaIsi = document.getElementById("beritaIsi");
+    const beritaGambar = document.getElementById("beritaGambar");
+    const beritaTanggal = document.getElementById("beritaTanggal");
+    const backBtn = document.getElementById("backBtn");
+
+    let semuaData = [];
 
     async function fetchSheet(sheetName) {
       const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
@@ -100,9 +127,11 @@
       return data.values;
     }
 
-    function tampilkanBerita(data, query = "") {
+    function tampilkanDaftarBerita(data, query = "") {
       beritaList.innerHTML = "";
-      const header = data[0];
+      beritaList.style.display = "block";
+      beritaDetail.style.display = "none";
+
       const items = data.slice(1)
         .filter(row => row[6] === "Publish" && row[0].toLowerCase().includes(query.toLowerCase()))
         .sort((a, b) => new Date(b[7]) - new Date(a[7]));
@@ -112,13 +141,32 @@
         const item = document.createElement("div");
         item.className = "berita-item";
         item.innerHTML = `
-          <h3><a href="${slug}" target="_blank">${judul}</a></h3>
+          <h3><a href="/${slug}" data-slug="${slug}">${judul}</a></h3>
           ${gambar ? `<img src="${gambar}" alt="${judul}" />` : ""}
           <p>${isi.slice(0, 150)}...</p>
           <small>${tanggal}</small>
         `;
         beritaList.appendChild(item);
       });
+    }
+
+    function tampilkanDetailBerita(slug) {
+      const data = semuaData.slice(1).find(row => row[4] === slug);
+      if (data) {
+        const [judul, label, gambar, isi, slugLink, meta, status, tanggal] = data;
+        beritaJudul.textContent = judul;
+        beritaIsi.innerHTML = isi;
+        beritaTanggal.textContent = tanggal;
+        if (gambar) {
+          beritaGambar.src = gambar;
+          beritaGambar.style.display = "block";
+        } else {
+          beritaGambar.style.display = "none";
+        }
+        beritaList.style.display = "none";
+        beritaDetail.style.display = "flex";
+        document.title = judul + " - Sarjana";
+      }
     }
 
     async function loadConfig() {
@@ -133,10 +181,20 @@
     }
 
     async function init() {
-      const data = await fetchSheet(sheetBerita);
-      tampilkanBerita(data);
-      searchInput.addEventListener("input", () => tampilkanBerita(data, searchInput.value));
+      semuaData = await fetchSheet(sheetBerita);
+      const slug = window.location.pathname.split("/").pop();
+      if (slug && slug !== "" && slug !== "index.html") {
+        tampilkanDetailBerita(slug);
+      } else {
+        tampilkanDaftarBerita(semuaData);
+      }
+      searchInput.addEventListener("input", () => tampilkanDaftarBerita(semuaData, searchInput.value));
     }
+
+    backBtn.addEventListener("click", () => {
+      history.pushState({}, "", "/");
+      tampilkanDaftarBerita(semuaData);
+    });
 
     loadConfig();
     init();
