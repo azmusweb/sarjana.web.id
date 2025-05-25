@@ -1,46 +1,44 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="{{meta-deskripsi-home}}" />
-  <title>{{meta-title-home}}</title>
-  <link rel="icon" href="{{favicon-link}}" type="image/png" />
-  <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SARJANA - Berita Dinamis</title>
+<meta name="description" content="Website berita dinamis SARJANA" />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="" id="favicon" />
 </head>
 <body>
-  <!-- Breaking News -->
-  <div class="breaking-news">Breaking News: <span id="breakingText"></span></div>
 
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <img id="logoImg" alt="logo" />
-      <span id="logoText"></span>
-    </div>
-    <nav id="mainMenu"></nav>
-  </header>
+<!-- Breaking News Running Text -->
+<div id="breaking-news" class="breaking-news"></div>
 
-  <!-- Slider Berita Terbaru -->
-  <section id="slider"></section>
+<!-- Header with Logo and Navigation -->
+<header class="header">
+  <div class="logo" id="logo"></div>
+  <nav class="nav" id="nav-menu"></nav>
+</header>
 
-  <!-- Konten Utama -->
-  <main class="home-layout">
-    <aside class="sidebar-left" id="sidebarLeft"></aside>
-    <section class="content" id="mainContent"></section>
-    <aside class="sidebar-right" id="sidebarRight"></aside>
-  </main>
+<!-- Slider Posting Terbaru -->
+<section id="slider" class="slider"></section>
 
-  <!-- Widget Label -->
-  <section class="label-widgets" id="labelWidgets"></section>
+<!-- Main Content: 3 parts: kiri-widget | posting | kanan-widget -->
+<main class="main-content">
+  <aside class="widget-left" id="widget-left"></aside>
+  <section class="posts" id="posts"></section>
+  <aside class="widget-right" id="widget-right"></aside>
+</main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-widget" id="footer1"></div>
-    <div class="footer-widget" id="footer2"></div>
-    <div class="footer-widget" id="footer3"></div>
-    <div class="footer-credit">&copy; <span id="copyright"></span></div>
-  </footer>
+<!-- Widget bawah posting (4 widget label postingan) -->
+<section class="widget-labels" id="widget-labels"></section>
+
+<!-- Footer dengan 3 widget -->
+<footer class="footer">
+  <div id="footer-widget-1" class="footer-widget"></div>
+  <div id="footer-widget-2" class="footer-widget"></div>
+  <div id="footer-widget-3" class="footer-widget"></div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
