@@ -1,147 +1,124 @@
-const apiKey = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
-const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-const sheetConfig = "Config";
-const sheetData = "Live Website";
+const SPREADSHEET_ID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+const API_KEY = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
 
-let slug = "";
-const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.has("slug")) {
-  // URL: berita.html?slug=...
-  slug = urlParams.get("slug");
-} else {
-  // URL: /slug (tanpa .html)
-  const path = window.location.pathname;
-  if (path !== "/") {
-    slug = path.substring(1); // hapus leading slash "/"
+const SHEET_CONFIG = "Config";
+const SHEET_LIVE = "Live Website";
+
+let config = {};
+let posts = [];
+
+async function fetchSpreadsheet() {
+  // Ambil semua sheet Config dan Live Website
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}?key=${API_KEY}&includeGridData=true`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Gagal mengambil data spreadsheet");
+  const data = await response.json();
+
+  // Parse Config
+  const configSheet = data.sheets.find(s => s.properties.title === SHEET_CONFIG);
+  if (!configSheet) throw new Error("Sheet Config tidak ditemukan");
+  configSheet.data[0].rowData.forEach(row => {
+    if (row.values && row.values[0] && row.values[1]) {
+      const key = row.values[0].formattedValue;
+      const val = row.values[1].formattedValue || "";
+      config[key] = val;
+    }
+  });
+
+  // Parse Live Website (berita)
+  const liveSheet = data.sheets.find(s => s.properties.title === SHEET_LIVE);
+  if (!liveSheet) throw new Error("Sheet Live Website tidak ditemukan");
+  const rows = liveSheet.data[0].rowData;
+  posts = [];
+
+  // Header rows biasanya di baris pertama, mulai dari baris kedua
+  for (let i = 1; i < rows.length; i++) {
+    const row = rows[i].values || [];
+    posts.push({
+      judul: row[0]?.formattedValue || "",
+      label: row[1]?.formattedValue || "",
+      gambar: row[2]?.formattedValue || "",
+      isi: row[3]?.formattedValue || "",
+      slug: row[4]?.formattedValue || "",
+      meta_deskripsi: row[5]?.formattedValue || "",
+      status_view: row[6]?.formattedValue || "",
+      tanggal: row[7]?.formattedValue || "",
+      type: row[8]?.formattedValue || ""
+    });
   }
 }
 
-// Ambil pengaturan dari Config
-function loadConfig() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetConfig}?key=${apiKey}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      const rows = data.values;
-      const config = {};
-      rows.forEach(([key, value]) => {
-        config[key] = value;
-      });
-
-      // Terapkan ke tema
-      document.documentElement.style.setProperty("--warna-utama", config["warna-utama"] || "#008000");
-      document.documentElement.style.setProperty("--warna-text", config["warna-text"] || "#000");
-      document.documentElement.style.setProperty("--warna-text-link", config["warna-text-link"] || "#008000");
-      document.documentElement.style.setProperty("--warna-link-menu-navigasi", config["warna-link-menu-navigasi"] || "#fff");
-      document.documentElement.style.setProperty("--warna-background-navigasi", config["warna-background-navigasi"] || "#008000");
-      document.documentElement.style.setProperty("--warna-text-button", config["warna-text-button"] || "#fff");
-      document.documentElement.style.setProperty("--warna-backround-button", config["warna-backround-button"] || "#008000");
-      document.documentElement.style.setProperty("--warna-backround-body", config["warna-backround-body"] || "#fff");
-      document.documentElement.style.setProperty("--warna-text-heading-h1-h2-h3", config["warna-text-heading-h1-h2-h3"] || "#000");
-      document.documentElement.style.setProperty("--warna-text-heading-h4-h5-h6", config["warna-text-heading-h4-h5-h6"] || "#222");
-      document.documentElement.style.setProperty("--warna-text-footer", config["warna-text-footer"] || "#eee");
-      document.documentElement.style.setProperty("--warna-backround-footer", config["warna-backround-footer"] || "#111");
-
-      // Logo
-      if (config["link-logo-gambar-website"]) {
-        const logo = document.querySelector(".logo-img");
-        if (logo) logo.src = config["link-logo-gambar-website"];
-      }
-      if (config["favicon-link"]) {
-        const favicon = document.querySelector("link[rel='icon']");
-        if (favicon) favicon.href = config["favicon-link"];
-      }
-      if (config["meta-title-home"]) document.title = config["meta-title-home"];
-      if (config["meta-deskripsi-home"]) {
-        let desc = document.querySelector("meta[name='description']");
-        if (!desc) {
-          desc = document.createElement("meta");
-          desc.name = "description";
-          document.head.appendChild(desc);
-        }
-        desc.content = config["meta-deskripsi-home"];
-      }
-
-      // Navigasi
-      if (config["menu-navigasi"]) {
-        const menuContainer = document.querySelector("#menu-navigasi");
-        if (menuContainer) {
-          const menus = config["menu-navigasi"].split(",");
-          menuContainer.innerHTML = menus
-            .map((menu) => `<li><a href="/${menu.trim()}">${menu.trim()}</a></li>`)
-            .join("");
-        }
-      }
-    });
+function setFavicon() {
+  if (config["favicon-link"]) {
+    const favicon = document.getElementById("favicon");
+    favicon.href = config["favicon-link"];
+  }
 }
 
-// Tampilkan daftar berita di halaman utama
-function loadBeritaUtama() {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetData}?key=${apiKey}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      const rows = data.values.slice(1); // Hilangkan header
-      const container = document.querySelector("#list-berita");
-      if (!container) return;
-      container.innerHTML = rows
-        .filter((row) => row[6]?.toLowerCase() === "tampil")
-        .map(
-          (row) => `
-        <article class="post">
-          <img src="${row[2]}" alt="${row[0]}" loading="lazy">
-          <h2><a href="/${row[4]}">${row[0]}</a></h2>
-          <p>${row[5]}</p>
-        </article>
-      `
-        )
-        .join("");
-    });
-}
-
-// Tampilkan detail berita di berita.html
-function loadDetailBerita() {
-  const slug = getSlug();
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetData}?key=${apiKey}`;
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      const rows = data.values;
-      const header = rows[0];
-      const indexSlug = header.indexOf("Slug + PermaLink");
-      const berita = rows.find((row, i) => i > 0 && row[indexSlug] === slug);
-      if (!berita) {
-        document.querySelector("#detail-berita").innerHTML = "<p>Berita tidak ditemukan.</p>";
-        return;
-      }
-
-      const [judul, label, gambar, isi, , metaDeskripsi, , tanggal] = berita;
-
-      document.querySelector("#detail-berita").innerHTML = `
-        <h1>${judul}</h1>
-        <p><em>${tanggal}</em></p>
-        <img src="${gambar}" alt="${judul}">
-        <div class="isi">${isi}</div>
-      `;
-
-      // Ganti title & meta
-      document.title = judul;
-      let meta = document.querySelector("meta[name='description']");
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.name = "description";
-        document.head.appendChild(meta);
-      }
-      meta.content = metaDeskripsi || judul;
-    });
-}
-
-// Jalankan
-document.addEventListener("DOMContentLoaded", () => {
-  loadConfig();
-  if (window.location.pathname === "/" || window.location.pathname === "/index.html") {
-    loadBeritaUtama();
+function renderLogo() {
+  const logoDiv = document.getElementById("logo");
+  if (config["link-logo-gambar-website"]) {
+    logoDiv.innerHTML = `<a href="/"><img src="${config["link-logo-gambar-website"]}" alt="${config["judul website"] || "SARJANA"}" style="height:40px;"></a>`;
+  } else if (config["logo-hanya-text"]) {
+    logoDiv.innerHTML = `<a href="/" class="logo-text">${config["logo-hanya-text"]}</a>`;
   } else {
-    loadDetailBerita();
+    logoDiv.innerHTML = `<a href="/" class="logo-text">SARJANA</a>`;
   }
-});
+}
+
+function renderMenu() {
+  const nav = document.getElementById("nav-menu");
+  nav.innerHTML = "";
+  if (!config["menu-navigasi"]) return;
+
+  // menu-navigasi di config, pisah koma, sub menu dipisah pakai "|"
+  const menus = config["menu-navigasi"].split(",");
+  menus.forEach(item => {
+    item = item.trim();
+    if (!item) return;
+
+    // cek sub menu
+    if (item.includes("|")) {
+      const [parent, ...subs] = item.split("|");
+      const subItems = subs.join("|").split(";");
+      const submenuHtml = subItems.map(s => {
+        let text = s.trim();
+        let slug = text.toLowerCase().replace(/\s+/g, "-");
+        return `<a href="/${slug}">${text}</a>`;
+      }).join("");
+      nav.innerHTML += `
+        <div class="dropdown">
+          <span>${parent}</span>
+          <div class="dropdown-content">${submenuHtml}</div>
+        </div>
+      `;
+    } else {
+      let slug = item.toLowerCase().replace(/\s+/g, "-");
+      nav.innerHTML += `<a href="/${slug}">${item}</a>`;
+    }
+  });
+}
+
+function renderBreakingNews() {
+  const breakingNewsDiv = document.getElementById("breaking-news");
+  if (!posts.length) {
+    breakingNewsDiv.innerHTML = "";
+    return;
+  }
+  // Ambil 5 berita terbaru status_view="publish"
+  const latest = posts.filter(p => p.status_view.toLowerCase() === "publish")
+    .sort((a,b) => new Date(b.tanggal) - new Date(a.tanggal))
+    .slice(0,5);
+
+  const text = latest.map(p => p.judul).join(" • ");
+  breakingNewsDiv.innerHTML = `<span>${text}</span>`;
+}
+
+function renderSlider() {
+  const slider = document.getElementById("slider");
+  if (!posts.length) {
+    slider.innerHTML = "";
+    return;
+  }
+  const latest = posts.filter(p => p.status_view.toLowerCase() === "publish")
+    .sort((a,b) => new
