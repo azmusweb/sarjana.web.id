@@ -1,89 +1,37 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="" id="metaDesc" />
-  <title id="metaTitle">Berita</title>
-  <link rel="icon" href="favicon.png" type="image/png" />
-  <link rel="stylesheet" href="style.css" />
-  <script>
-    const API_KEY = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
-    const SHEET_ID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-
-    async function fetchSheet(sheetName) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.values;
-    }
-
-    function getSlug() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("slug") || "";
-    }
-
-    function applyConfig(configArray) {
-      const config = Object.fromEntries(configArray.slice(1));
-      document.querySelector("link[rel='icon']").href = config["favicon-link"] || "favicon.png";
-      document.getElementById("metaTitle").textContent = config["meta-title-home"] || "Berita";
-    }
-
-    function renderBerita(dataArray, slug) {
-      const data = dataArray.slice(1); // header di index 0
-      const berita = data.find(row => row[4] === slug);
-      if (!berita) {
-        document.getElementById("beritaContent").innerHTML = "<p>Berita tidak ditemukan.</p>";
-        return;
-      }
-
-      document.title = berita[0];
-      document.getElementById("metaTitle").textContent = berita[0];
-      document.getElementById("metaDesc").setAttribute("content", berita[5]);
-
-      const html = `
-        <h1>${berita[0]}</h1>
-        <p><em>${berita[7]}</em></p>
-        <img src="${berita[2]}" alt="" style="max-width:100%;height:auto;"/>
-        <div>${berita[3]}</div>
-      `;
-      document.getElementById("beritaContent").innerHTML = html;
-    }
-
-    async function init() {
-      const config = await fetchSheet("Config");
-      applyConfig(config);
-
-      const slug = getSlug();
-      const beritaSheet = await fetchSheet("Live Website");
-      renderBerita(beritaSheet, slug);
-    }
-
-    window.addEventListener("DOMContentLoaded", init);
-  </script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SARJANA - Detail Berita</title>
+<meta name="description" content="" id="meta-desc" />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="" id="favicon" />
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <img id="logoImg" alt="logo" />
-      <span id="logoText"></span>
-    </div>
-    <nav id="mainMenu"></nav>
-  </header>
 
-  <!-- Konten Utama -->
-  <main class="berita-layout">
-    <article id="beritaContent"></article>
-    <aside id="sidebarRight"></aside>
-  </main>
+<!-- Header with Logo and Navigation -->
+<header class="header">
+  <div class="logo" id="logo"></div>
+  <nav class="nav" id="nav-menu"></nav>
+</header>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-widget" id="footer1"></div>
-    <div class="footer-widget" id="footer2"></div>
-    <div class="footer-widget" id="footer3"></div>
-    <div class="footer-credit">&copy; <span id="copyright"></span></div>
-  </footer>
+<!-- Breaking News Running Text -->
+<div id="breaking-news" class="breaking-news"></div>
+
+<!-- Detail berita + widget kanan -->
+<main class="main-content berita-detail">
+  <article id="post-detail"></article>
+  <aside class="widget-right" id="widget-right"></aside>
+</main>
+
+<!-- Footer dengan 3 widget -->
+<footer class="footer">
+  <div id="footer-widget-1" class="footer-widget"></div>
+  <div id="footer-widget-2" class="footer-widget"></div>
+  <div id="footer-widget-3" class="footer-widget"></div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
