@@ -3,14 +3,17 @@ const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
 const sheetConfig = "Config";
 const sheetData = "Live Website";
 
-function getSlug() {
-  let slug = new URLSearchParams(window.location.search).get("slug");
-  if (!slug) {
-    const path = window.location.pathname;
-    const pathSlug = path.split("/").filter(Boolean).pop();
-    slug = pathSlug;
+let slug = "";
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("slug")) {
+  // URL: berita.html?slug=...
+  slug = urlParams.get("slug");
+} else {
+  // URL: /slug (tanpa .html)
+  const path = window.location.pathname;
+  if (path !== "/") {
+    slug = path.substring(1); // hapus leading slash "/"
   }
-  return slug;
 }
 
 // Ambil pengaturan dari Config
