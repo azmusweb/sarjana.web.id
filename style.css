@@ -1,0 +1,48 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+header, footer {
+  background-color: var(--bg-nav);
+  color: var(--text-footer);
+}
+
+.logo img {
+  height: 40px;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+main.home-layout,
+main.berita-layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.label-widgets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin: 2rem;
+}
+
+.footer-widget {
+  padding: 1rem;
+}
+
+/* Variabel CSS dari CONFIG */
+:root {
+  --bg: #ffffff;
+  --text: #222222;
+  --bg-nav: #008000;
+  --text-footer: #eeeeee;
+  /* dan seterusnya… */
+}
