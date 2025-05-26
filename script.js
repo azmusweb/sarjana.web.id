@@ -1,76 +1,78 @@
-async function fetchSheetData(sheetName) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${CONFIG.sheetId}/values/${sheetName}?key=${CONFIG.apiKey}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.values;
+const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+const configSheet = "Config";
+const contentSheet = "Live Website";
+
+function fetchSheetData(sheetName) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+  return fetch(url).then(res => res.json()).then(data => {
+    const [headers, ...rows] = data.values;
+    return rows.map(row => Object.fromEntries(headers.map((h, i) => [h, row[i] || ""])));
+  });
 }
 
-function renderMenu(menuRow) {
-  const menuEl = document.getElementById("main-menu");
-  if (!menuEl) return;
-  const menus = menuRow[0].split(",").map(m => m.trim());
-  menuEl.innerHTML = menus.map(m => `<a href="?label=${encodeURIComponent(m)}">${m}</a>`).join("");
+function renderYear() {
+  const year = new Date().getFullYear();
+  document.getElementById("year").textContent = year;
 }
 
-function renderBeritaList(data) {
-  const container = document.getElementById("berita-container");
-  if (!container) return;
-  const headers = data[0];
-  const rows = data.slice(1);
-  container.innerHTML = rows.map(row => {
-    const slug = row[4];
-    const title = row[0];
-    const label = row[1];
-    const image = row[2];
-    return \`
-      <article>
-        <a href="berita.html?slug=\${slug}">
-          <h2>\${title}</h2>
-          <img src="\${image}" alt="\${title}" width="100%" />
-          <p><strong>\${label}</strong></p>
-        </a>
-      </article>
-    \`;
-  }).join("");
+function renderMenu(config) {
+  const nav = document.getElementById("menu");
+  if (!nav || !config.menu) return;
+  const items = config.menu.split(",").map(item => {
+    const [label, link] = item.split("|");
+    return `<a href="${link}">${label}</a>`;
+  });
+  nav.innerHTML = items.join(" | ");
 }
 
-function renderBeritaDetail(data, slug) {
-  const detailEl = document.getElementById("berita-detail");
-  if (!detailEl) return;
-  const headers = data[0];
-  const rows = data.slice(1);
-  const berita = rows.find(row => row[4] === slug);
-  if (!berita) {
-    detailEl.innerHTML = "<p>Berita tidak ditemukan.</p>";
-    return;
+function renderLogo(config) {
+  const logo = document.getElementById("logo");
+  if (logo && config.logo) logo.innerHTML = `<img src="${config.logo}" alt="Logo" style="height:40px"/>`;
+}
+
+function loadHomepage() {
+  fetchSheetData(configSheet).then(configRows => {
+    const config = Object.fromEntries(configRows.map(row => [row.FUNGSI.toLowerCase(), row.WEBSITE]));
+    renderYear();
+    renderMenu(config);
+    renderLogo(config);
+  });
+  fetchSheetData(contentSheet).then(data => {
+    const container = document.getElementById("articles");
+    if (container) {
+      container.innerHTML = data
+        .filter(b => b["Status View"] === "1")
+        .map(b => `<article>
+          <h2><a href="${location.origin}/${b.Slug}">${b.Judul}</a></h2>
+          <img src="${b.Gambar}" alt="${b.Judul}" style="max-width:100%"/>
+          <p>${b["Meta Deskripsi"]}</p>
+        </article>`)
+        .join("");
+    }
+  });
+}
+
+function loadBerita() {
+  const slug = window.location.pathname.replace("/", "");
+  fetchSheetData(contentSheet).then(data => {
+    const artikel = data.find(b => b.Slug === slug);
+    if (!artikel) return document.getElementById("beritaContent").textContent = "Berita tidak ditemukan.";
+    document.title = artikel.Judul;
+    document.getElementById("metaDesc").setAttribute("content", artikel["Meta Deskripsi"]);
+    document.getElementById("beritaContent").innerHTML = `
+      <h1>${artikel.Judul}</h1>
+      <p><em>${artikel["Tgl/Jam"]}</em></p>
+      <img src="${artikel.Gambar}" alt="${artikel.Judul}" style="max-width:100%"/>
+      <div>${artikel.Body}</div>`;
+  });
+  loadHomepage();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (location.pathname === "/" || location.pathname === "/index.html") {
+    loadHomepage();
+  } else {
+    loadBerita();
   }
-  detailEl.innerHTML = \`
-    <h2>\${berita[0]}</h2>
-    <img src="\${berita[2]}" alt="\${berita[0]}" width="100%" />
-    <p><em>\${berita[1]}</em></p>
-    <div>\${berita[3]}</div>
-  \`;
-}
-
-function getSlug() {
-  const urlParams = new URLSearchParams(window.location.search);
-  return urlParams.get("slug");
-}
-
-async function init() {
-  const config = await fetchSheetData(CONFIG.configSheet);
-  renderMenu(config);
-
-  if (document.getElementById("berita-container")) {
-    const berita = await fetchSheetData(CONFIG.contentSheet);
-    renderBeritaList(berita);
-  }
-
-  if (document.getElementById("berita-detail")) {
-    const berita = await fetchSheetData(CONFIG.contentSheet);
-    const slug = getSlug();
-    renderBeritaDetail(berita, slug);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", init);
+});
