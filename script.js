@@ -2,258 +2,222 @@ const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
 const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
 
 let configData = {};
-let beritaData = [];
+let liveWebsiteData = [];
 
-// Utility ambil data JSON dari Google Sheets via API
+// Ambil data sheet Google Spreadsheet
 async function fetchSheet(sheetName) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
+  const response = await fetch(url);
+  const data = await response.json();
+  if (!data.values) return [];
   return data.values;
 }
 
-// Parsing data konfigurasi ke objek kunci-nilai
-function parseConfig(values) {
-  let config = {};
-  values.forEach(row => {
-    if (row.length >= 2) {
-      config[row[0].trim()] = row[1].trim();
-    }
+// Parse data config jadi objek key-value
+function parseConfig(rawConfig) {
+  const config = {};
+  rawConfig.forEach(([key, value]) => {
+    config[key.trim()] = value ? value.trim() : '';
   });
   return config;
 }
 
-// Parsing data berita dari sheet 'Live Website'
-function parseBerita(values) {
-  const headers = values[0];
-  let berita = [];
-  for (let i = 1; i < values.length; i++) {
-    let obj = {};
-    headers.forEach((h, idx) => {
-      obj[h.trim()] = values[i][idx] || '';
-    });
-    berita.push(obj);
-  }
-  return berita;
-}
-
-// Render logo & judul situs
-function renderLogoAndSiteName() {
-  const logoUrl = configData.SITE_LOGO || '';
-  const siteName = configData.SITE_NAME || 'Website';
-  const logoImg = document.getElementById('site-logo');
-  const siteNameEl = document.getElementById('site-name');
-  const logoLink = document.getElementById('logo-link');
-
-  if (logoUrl !== '') {
-    logoImg.src = logoUrl;
-    logoImg.style.display = 'inline-block';
-    siteNameEl.style.display = 'none';
-  } else {
-    siteNameEl.textContent = siteName;
-    siteNameEl.style.display = 'inline-block';
-    logoImg.style.display = 'none';
-  }
-
-  logoLink.href = '/';
-}
-
-// Render menu & submenu dari config['menu-navigasi']
-function renderMenu() {
-  const menuContainer = document.getElementById('menu-container');
-  menuContainer.innerHTML = '';
-  const menuStr = configData['menu-navigasi'] || '';
-  if (!menuStr) return;
-
-  const menuItems = menuStr.split(',');
-  menuItems.forEach(item => {
-    item = item.trim();
-    if (!item) return;
-
-    // Contoh item: Home | / atau BERITA (news|red) | /berita/
-    // Parse judul & submenu
-    let parts = item.split('|').map(p => p.trim());
+// Parsing menu navigasi dari config
+function buildMenu(menuNav) {
+  // Format: "Home | /, BERITA (news|red) | /berita/, GURU | /guru/, ..."
+  const items = menuNav.split(',').map(item => item.trim()).filter(Boolean);
+  const menuItems = items.map(item => {
+    const parts = item.split('|').map(p => p.trim());
     let titlePart = parts[0];
-    let url = parts[1] || '#';
+    const url = parts[1] || '#';
 
-    // Cek submenu di dalam kurung ()
-    let submenu = [];
-    let submenuMatch = titlePart.match(/\(([^)]+)\)/);
-    if (submenuMatch) {
-      submenu = submenuMatch[1].split('|').map(s => s.trim());
-      titlePart = titlePart.replace(/\(([^)]+)\)/, '').trim();
+    let title = titlePart;
+    let label = null;
+    let color = null;
+    const labelMatch = titlePart.match(/\(([^)]+)\)/);
+    if (labelMatch) {
+      const inside = labelMatch[1].split('|');
+      label = inside[0].trim();
+      color = inside[1] ? inside[1].trim() : null;
+      title = titlePart.replace(/\(([^)]+)\)/, '').trim();
     }
+    return { title, label, color, url };
+  });
+  return menuItems;
+}
 
-    // Buat elemen li
-    const li = document.createElement('li');
-    li.classList.add('menu-item');
-    if (submenu.length) li.classList.add('has-submenu');
-
-    // Buat link utama menu
+// Render menu ke header nav
+function renderMenu(menuItems) {
+  const nav = document.getElementById('menu');
+  nav.innerHTML = '';
+  menuItems.forEach(item => {
     const a = document.createElement('a');
-    a.href = url;
-    a.textContent = titlePart;
-    li.appendChild(a);
-
-    // Buat submenu jika ada
-    if (submenu.length) {
-      const ulSub = document.createElement('ul');
-      ulSub.classList.add('submenu');
-      submenu.forEach(sub => {
-        const liSub = document.createElement('li');
-        const aSub = document.createElement('a');
-        aSub.href = url.endsWith('/') ? url + sub + '/' : url + '/' + sub + '/';
-        aSub.textContent = sub;
-        liSub.appendChild(aSub);
-        ulSub.appendChild(liSub);
-      });
-      li.appendChild(ulSub);
+    // Hilangkan www dan .html sesuai permintaan
+    let href = item.url.replace(/\.html$/i, '');
+    href = href.replace(/^www\./i, '');
+    a.href = href;
+    a.textContent = item.title;
+    if (item.color) {
+      a.style.color = item.color;
+      a.style.fontWeight = '700';
     }
-
-    menuContainer.appendChild(li);
+    nav.appendChild(a);
   });
 }
 
-// Render bilah berita utama (rolling headline) berdasarkan label HEADLINE_LABEL
-function renderHeadline() {
-  if (!configData.HEADLINE_ROLLING || configData.HEADLINE_ROLLING.toLowerCase() !== 'true') return;
-
-  const label = configData.HEADLINE_LABEL || 'headline';
-  const headlineContainer = document.getElementById('headline-container');
-  headlineContainer.innerHTML = '';
-
-  const headlines = beritaData.filter(b => b.Label.toLowerCase() === label.toLowerCase() && b.Status_View.toLowerCase() === 'publish');
-  if (headlines.length === 0) return;
-
-  // Buat teks berjalan marquee sederhana
-  let marquee = document.createElement('marquee');
-  marquee.setAttribute('behavior', 'scroll');
-  marquee.setAttribute('direction', 'left');
-  marquee.setAttribute('scrollamount', '5');
-
-  headlines.forEach((item, idx) => {
-    const a = document.createElement('a');
-    a.href = item.Slug.startsWith('/') ? item.Slug : '/' + item.Slug;
-    a.textContent = item.Judul;
-    a.style.marginRight = '50px';
-    marquee.appendChild(a);
-  });
-
-  headlineContainer.appendChild(marquee);
-}
-
-// Render widget sesuai label di config dan data berita
-function renderWidgets() {
-  // Widget kiri dan kanan
-  ['LEFT', 'RIGHT'].forEach(side => {
-    const container = document.getElementById(`widget-${side.toLowerCase()}`);
-    if (!container) return;
-    container.innerHTML = '';
-    const widgets = (configData[`WIDGET_${side}`] || '').split(',').map(w => w.trim()).filter(Boolean);
-
-    widgets.forEach(widgetLabel => {
-      const items = beritaData.filter(b => b.Label.toLowerCase() === widgetLabel.toLowerCase() && b.Status_View.toLowerCase() === 'publish');
-      if (items.length === 0) return;
-
-      // Buat section widget
-      const section = document.createElement('section');
-      section.classList.add('widget-section');
-      const h3 = document.createElement('h3');
-      h3.textContent = widgetLabel.toUpperCase();
-      section.appendChild(h3);
-
-      items.slice(0, 3).forEach(item => {
-        const a = document.createElement('a');
-        a.href = item.Slug.startsWith('/') ? item.Slug : '/' + item.Slug;
-        a.textContent = item.Judul;
-        section.appendChild(a);
-        section.appendChild(document.createElement('br'));
-      });
-
-      container.appendChild(section);
-    });
-  });
-
-  // Widget biru bawah (3 bilah)
-  for (let i = 1; i <= 3; i++) {
-    const container = document.getElementById(`widget-blue-${i}`);
-    if (!container) continue;
-    container.innerHTML = '';
-
-    const label = configData[`WIDGET_LABEL_${i}`] || '';
-    if (!label) continue;
-
-    const items = beritaData.filter(b => b.Label.toLowerCase() === label.toLowerCase() && b.Status_View.toLowerCase() === 'publish');
-    if (items.length === 0) continue;
-
-    const section = document.createElement('section');
-    section.classList.add('widget-blue-section');
-    const h3 = document.createElement('h3');
-    h3.textContent = label.toUpperCase();
-    section.appendChild(h3);
-
-    items.slice(0, 4).forEach(item => {
-      const a = document.createElement('a');
-      a.href = item.Slug.startsWith('/') ? item.Slug : '/' + item.Slug;
-      a.textContent = item.Judul;
-      section.appendChild(a);
-      section.appendChild(document.createElement('br'));
-    });
-
-    container.appendChild(section);
-  }
-}
-
-// Render daftar berita utama di halaman index
-function renderBeritaList() {
-  const container = document.getElementById('berita-list');
-  if (!container) return;
-  container.innerHTML = '';
-
-  const publishedBerita = beritaData.filter(b => b.Status_View.toLowerCase() === 'publish');
-  publishedBerita.forEach(item => {
-    const article = document.createElement('article');
-    article.classList.add('berita-item');
-
-    const title = document.createElement('h2');
-    const link = document.createElement('a');
-    link.href = item.Slug.startsWith('/') ? item.Slug : '/' + item.Slug;
-    link.textContent = item.Judul;
-    title.appendChild(link);
-
+// Render logo situs
+function renderLogo(siteName, siteLogo) {
+  const logo = document.getElementById('logo');
+  if (siteLogo) {
     const img = document.createElement('img');
-    img.src = item.Gambar || '';
-    img.alt = item.Judul;
+    img.src = siteLogo;
+    img.alt = siteName;
+    img.style.height = '40px';
+    img.style.verticalAlign = 'middle';
+    logo.innerHTML = '';
+    logo.appendChild(img);
+  } else {
+    logo.textContent = siteName;
+  }
+  logo.href = '/';
+}
 
-    const excerpt = document.createElement('p');
-    excerpt.textContent = item.Meta_Deskripsi || '';
+// Filter data berita berdasarkan label dan status aktif
+function filterByLabel(label) {
+  return liveWebsiteData.filter(item => 
+    item.Label.toLowerCase() === label.toLowerCase() && 
+    item.Status_View.toLowerCase() === 'active'
+  );
+}
 
-    article.appendChild(title);
-    article.appendChild(img);
-    article.appendChild(excerpt);
+// Membuat elemen artikel berita singkat
+function createArticle(item) {
+  const article = document.createElement('article');
+  article.className = 'news-item';
+  article.innerHTML = `
+    <h3><a href="/${item.Slug}">${item.Judul}</a></h3>
+    <p>${item.Meta_Deskripsi}</p>
+  `;
+  return article;
+}
 
-    container.appendChild(article);
+// Render widget berdasarkan label widget di config
+function renderWidget(id, label) {
+  const container = document.getElementById(id);
+  container.innerHTML = '';
+  if (!label) return;
+  const items = filterByLabel(label);
+  if (items.length === 0) {
+    container.textContent = `Tidak ada berita untuk kategori ${label}`;
+    return;
+  }
+  items.slice(0, 5).forEach(item => {
+    const art = createArticle(item);
+    container.appendChild(art);
   });
 }
 
-// Inisialisasi utama
+// Render rolling headline jika diaktifkan
+function renderHeadlineRolling() {
+  if (configData.HEADLINE_ROLLING?.toLowerCase() !== 'true') return;
+  const container = document.getElementById('headline-rolling');
+  const headlines = liveWebsiteData.filter(item => 
+    item.Label.toLowerCase() === configData.HEADLINE_LABEL?.toLowerCase() && 
+    item.Status_View.toLowerCase() === 'active'
+  );
+  if (headlines.length === 0) {
+    container.style.display = 'none';
+    return;
+  }
+  container.style.display = 'block';
+  container.textContent = headlines.map(h => h.Judul).join('  •  ');
+  // Simple marquee effect (scroll)
+  let pos = container.offsetWidth;
+  function scroll() {
+    pos--;
+    if (pos < -container.scrollWidth) pos = container.offsetWidth;
+    container.style.transform = `translateX(${pos}px)`;
+    requestAnimationFrame(scroll);
+  }
+  scroll();
+}
+
+// Render halaman utama index.html
+function renderIndex() {
+  renderLogo(configData.SITE_NAME, configData.SITE_LOGO);
+  renderMenu(buildMenu(configData['menu-navigasi'] || ''));
+
+  // Render widgets kiri dan kanan sesuai config
+  renderWidget('widget-left', configData.WIDGET_LABEL_1);
+  renderWidget('widget-right', configData.WIDGET_LABEL_2);
+  
+  // Render blue widgets jika ada
+  renderWidget('widget-blue-1', configData.WIDGET_LABEL_1);
+  renderWidget('widget-blue-2', configData.WIDGET_LABEL_2);
+  renderWidget('widget-blue-3', configData.WIDGET_LABEL_3);
+
+  renderHeadlineRolling();
+}
+
+// Render halaman detail berita di berita.html
+function renderDetail(slug) {
+  renderLogo(configData.SITE_NAME, configData.SITE_LOGO);
+  renderMenu(buildMenu(configData['menu-navigasi'] || ''));
+
+  const articleContainer = document.getElementById('news-detail');
+  const news = liveWebsiteData.find(item => item.Slug.toLowerCase() === slug.toLowerCase());
+  if (!news) {
+    articleContainer.innerHTML = '<p>Berita tidak ditemukan.</p>';
+    return;
+  }
+  articleContainer.innerHTML = `
+    <h1>${news.Judul}</h1>
+    ${news.Gambar ? `<img src="${news.Gambar}" alt="${news.Judul}" />` : ''}
+    <p>${news.Body}</p>
+  `;
+}
+
+// Ambil slug dari URL tanpa ekstensi
+function getSlugFromURL() {
+  const path = window.location.pathname;
+  const cleanPath = path.replace(/^\/|\/$/g, ''); // hapus slash depan belakang
+  return cleanPath.toLowerCase();
+}
+
+// Inisialisasi website
 async function init() {
-  try {
-    const configValues = await fetchSheet('Config');
-    configData = parseConfig(configValues);
+  const rawConfig = await fetchSheet('Config');
+  configData = parseConfig(rawConfig);
 
-    const beritaValues = await fetchSheet('Live Website');
-    beritaData = parseBerita(beritaValues);
+  const rawLiveWebsite = await fetchSheet('Live Website');
+  // Asumsikan header kolom di baris pertama
+  const headers = rawLiveWebsite[0];
+  liveWebsiteData = rawLiveWebsite.slice(1).map(row => {
+    const obj = {};
+    headers.forEach((header, i) => {
+      obj[header] = row[i] || '';
+    });
+    return obj;
+  });
 
-    renderLogoAndSiteName();
-    renderMenu();
-    renderHeadline();
-    renderWidgets();
-    renderBeritaList();
-  } catch (error) {
-    console.error('Error fetching data:', error);
+  const slug = getSlugFromURL();
+
+  if (window.location.pathname.endsWith('berita') || slug === 'berita') {
+    // jika url /berita/ render halaman berita list (index.html bisa saja)
+    renderIndex();
+  } else if (window.location.pathname === '/' || slug === '') {
+    renderIndex();
+  } else {
+    // selain itu render detail berita
+    renderDetail(slug);
+  }
+
+  // Footer text
+  const footer = document.getElementById('footer-text');
+  if (footer && configData.FOOTER_TEXT) {
+    footer.textContent = configData.FOOTER_TEXT;
   }
 }
 
 // Jalankan inisialisasi saat halaman siap
-document.addEventListener('DOMContentLoaded', init);
+window.addEventListener('DOMContentLoaded', init);
