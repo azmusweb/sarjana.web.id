@@ -1,3 +1,0 @@
-# Sarjana News Website
-
-Website berita dinamis berbasis Google Spreadsheet...
