@@ -1,30 +1,58 @@
-// Contoh sederhana pengambilan data dari Google Spreadsheet
-// Pastikan spreadsheet Anda sudah disetting untuk dapat diakses publik dengan API yang sesuai
-// Berikut contoh dummy data sebagai ilustrasi
+const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
+const API_KEY = 'AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4';
+const SHEET_NAME = 'Live Website';
 
-const beritaDummy = [
-    {
-        judul: "Berita Pertama Sarjana V.3",
-        gambar: "https://via.placeholder.com/400x200?text=Berita+1",
-        isi: "Ini adalah isi berita pertama yang menarik.",
-        slug: "berita-pertama-sarjana",
-        tanggal: "2025-05-26"
-    },
-    {
-        judul: "Berita Kedua Sarjana V.3",
-        gambar: "https://via.placeholder.com/400x200?text=Berita+2",
-        isi: "Ini adalah isi berita kedua yang tidak kalah menarik.",
-        slug: "berita-kedua-sarjana",
-        tanggal: "2025-05-25"
+// Fungsi untuk ambil data berita dari Google Sheets
+async function fetchBerita() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Gagal mengambil data dari spreadsheet');
+        
+        const data = await response.json();
+        const rows = data.values;
+
+        if (!rows || rows.length < 2) {
+            throw new Error('Data berita tidak ditemukan atau kosong');
+        }
+
+        // Baris pertama adalah header kolom, jadi kita skip
+        const beritaList = rows.slice(1).map(row => {
+            return {
+                judul: row[0] || '',
+                label: row[1] || '',
+                gambar: row[2] || '',
+                isi: row[3] || '',
+                slug: row[4] || '',
+                meta: row[5] || '',
+                view: row[6] || '',
+                tanggal: row[7] || '',
+                type: row[8] || ''
+            };
+        });
+
+        return beritaList;
+    } catch (error) {
+        console.error(error);
+        return [];
     }
-];
+}
 
 // Fungsi untuk tampilkan daftar berita di halaman index.html
-function loadBeritaList() {
+async function loadBeritaList() {
     const container = document.getElementById('berita-container');
-    container.innerHTML = '';
+    container.innerHTML = '<p>Loading berita...</p>';
 
-    beritaDummy.forEach(berita => {
+    const beritaList = await fetchBerita();
+
+    if (beritaList.length === 0) {
+        container.innerHTML = '<p>Tidak ada berita ditemukan.</p>';
+        return;
+    }
+
+    container.innerHTML = '';
+    beritaList.forEach(berita => {
         const div = document.createElement('div');
         div.className = 'berita-item';
         div.innerHTML = `
@@ -40,17 +68,21 @@ function loadBeritaList() {
 }
 
 // Fungsi untuk tampilkan detail berita di halaman berita.html
-function loadBeritaDetail() {
+async function loadBeritaDetail() {
     const params = new URLSearchParams(window.location.search);
     const slug = params.get('slug');
     const detailContainer = document.getElementById('berita-detail');
+    
+    detailContainer.innerHTML = '<p>Loading berita...</p>';
 
     if (!slug) {
         detailContainer.innerHTML = "<p>Berita tidak ditemukan.</p>";
         return;
     }
 
-    const berita = beritaDummy.find(b => b.slug === slug);
+    const beritaList = await fetchBerita();
+    const berita = beritaList.find(b => b.slug === slug);
+
     if (!berita) {
         detailContainer.innerHTML = "<p>Berita tidak ditemukan.</p>";
         return;
@@ -64,7 +96,6 @@ function loadBeritaDetail() {
     `;
 }
 
-// Jalankan fungsi sesuai halaman
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('berita-container')) {
         loadBeritaList();
