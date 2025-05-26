@@ -3,44 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sarjana News</title>
+  <meta name="description" content="Website Berita Dinamis Sarjana" />
+  <title>Beranda - Sarjana</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div class="topbar">
-      <h1 class="logo"><a href="index.html" id="site-title">Sarjana</a></h1>
-      <nav id="main-nav"></nav>
+    <div class="top-bar">
+      <div id="logo-area"></div>
+      <nav id="main-menu"></nav>
     </div>
+    <div id="headline-bar"></div>
   </header>
 
-  <!-- Bilah posting utama -->
-  <section id="headline-bar"></section>
-
-  <!-- Layout konten utama -->
-  <main>
-    <div class="content-layout">
-      <!-- Widget kiri -->
-      <aside class="left-widgets" id="left-widgets"></aside>
-
-      <!-- Post utama -->
-      <section class="main-posts" id="main-posts"></section>
-
-      <!-- Widget kanan -->
-      <aside class="right-widgets" id="right-widgets"></aside>
-    </div>
-
-    <!-- Widget bawah (3 kolom biru elegan) -->
-    <section class="triple-widgets">
-      <div class="widget blue" id="widget-blue-1"></div>
-      <div class="widget blue" id="widget-blue-2"></div>
-      <div class="widget blue" id="widget-blue-3"></div>
-    </section>
+  <main class="container">
+    <section id="main-news"></section>
+    <aside>
+      <div id="left-widgets" class="widget-column"></div>
+      <div id="right-widgets" class="widget-column"></div>
+    </aside>
+    <section id="bottom-widgets" class="bottom-widgets"></section>
   </main>
 
-  <footer>
-    <p>&copy; 2025 Sarjana News</p>
-  </footer>
+  <footer id="footer"></footer>
 
   <script src="script.js"></script>
 </body>
