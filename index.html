@@ -4,19 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sarjana News</title>
-  <meta name="description" content="Website berita terkini dengan tampilan bersih dan profesional">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1 class="logo"><a href="index.html" id="site-title">Sarjana</a></h1>
-    <nav id="menu"></nav>
+    <div class="topbar">
+      <h1 class="logo"><a href="index.html" id="site-title">Sarjana</a></h1>
+      <nav id="main-nav"></nav>
+    </div>
   </header>
 
+  <!-- Bilah posting utama -->
+  <section id="headline-bar"></section>
+
+  <!-- Layout konten utama -->
   <main>
-    <nav id="main-nav"></nav>
-    <section class="berita-utama" id="berita-utama"></section>
-    <section class="daftar-berita" id="daftar-berita"></section>
+    <div class="content-layout">
+      <!-- Widget kiri -->
+      <aside class="left-widgets" id="left-widgets"></aside>
+
+      <!-- Post utama -->
+      <section class="main-posts" id="main-posts"></section>
+
+      <!-- Widget kanan -->
+      <aside class="right-widgets" id="right-widgets"></aside>
+    </div>
+
+    <!-- Widget bawah (3 kolom biru elegan) -->
+    <section class="triple-widgets">
+      <div class="widget blue" id="widget-blue-1"></div>
+      <div class="widget blue" id="widget-blue-2"></div>
+      <div class="widget blue" id="widget-blue-3"></div>
+    </section>
   </main>
 
   <footer>
