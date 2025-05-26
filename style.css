@@ -1,33 +1,160 @@
-/* === Tata Letak Beranda === */
-.content-layout {
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  color: #333;
+}
+
+header {
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  padding: 10px 20px;
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.left-widgets,
-.right-widgets {
-  width: 20%;
+#branding {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
 }
 
-.main-posts {
+#branding img {
+  margin-right: 10px;
+  height: 40px;
+}
+
+#site-name {
+  font-weight: bold;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+nav#main-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.menu-item {
+  position: relative;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  padding: 8px 12px;
+  display: block;
+  cursor: pointer;
+}
+
+.menu-item:hover .submenu {
+  display: block;
+}
+
+.submenu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 10;
+  min-width: 150px;
+}
+
+.submenu a {
+  padding: 8px 12px;
+  display: block;
+  white-space: nowrap;
+  color: #444;
+  cursor: pointer;
+}
+
+.headline-wrapper {
+  background: #e0f0ff;
+  padding: 10px;
+  font-weight: bold;
+  overflow: hidden;
+}
+
+.headline-wrapper a {
+  color: #0077cc;
+  text-decoration: none;
+  margin-right: 30px;
+}
+
+.home-widgets {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+}
+
+.widget-column {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.widget-box {
+  background: white;
+  padding: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.widget-box h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #0077cc;
+}
+
+.widget-item {
+  margin: 5px 0;
+  padding-left: 10px;
+  border-left: 3px solid #0077cc;
+  cursor: pointer;
+}
+
+.widget-blue-section {
+  display: flex;
+  gap: 10px;
+  margin: 20px;
+}
+
+.widget-box.blue {
+  background: #e6f0fa;
   flex: 1;
 }
 
-/* Triple widget biru */
-.triple-widgets {
-  display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
+#posts {
+  margin: 20px;
 }
 
-.triple-widgets .widget {
-  flex: 1;
-  padding: 1rem;
-  border-radius: 8px;
+.post-item {
+  background: white;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+  padding: 10px;
 }
 
-.triple-widgets .widget.blue {
-  background-color: #e3f2fd;
-  border: 1px solid #90caf9;
+.post-item h2 {
+  margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+  nav#main-nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .home-widgets, .widget-blue-section {
+    flex-direction: column;
+  }
+  .widget-column, .widget-box.blue {
+    width: 100%;
+  }
 }
