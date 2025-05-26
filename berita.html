@@ -1,82 +1,31 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Berita - Sarjana</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Detail Berita Sarjana" />
+  <title>Berita - Sarjana</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header>
+    <div class="top-bar">
+      <div id="logo-area"></div>
+      <nav id="main-menu"></nav>
+    </div>
+  </header>
 
-<header>
-  <a id="logo-link" href="./">
-    <img id="site-logo" src="" alt="Logo" />
-    <span id="site-name"></span>
-  </a>
-  <nav>
-    <ul id="main-nav"></ul>
-  </nav>
-</header>
+  <main class="container">
+    <article id="news-detail"></article>
+    <aside>
+      <div id="left-widgets" class="widget-column"></div>
+      <div id="right-widgets" class="widget-column"></div>
+    </aside>
+    <section id="related-news"></section>
+  </main>
 
-<section id="headline-bar">
-  <div id="headline-marquee"></div>
-</section>
+  <footer id="footer"></footer>
 
-<main style="padding: 20px; max-width: 900px; margin: 0 auto;">
-  <article id="article-content">
-    <h1 id="article-title"></h1>
-    <p id="article-meta" style="color: #666; font-size: 0.9rem;"></p>
-    <img id="article-image" src="" alt="" style="max-width: 100%; margin: 20px 0;" />
-    <div id="article-body"></div>
-  </article>
-</main>
-
-<footer>
-  <p id="footer-text"></p>
-</footer>
-
-<script src="script.js"></script>
-<script>
-  // Ambil slug dari URL tanpa .html
-  const urlParams = new URLSearchParams(window.location.search);
-  let slug = urlParams.get('slug') || window.location.pathname.split('/').pop().replace('.html', '');
-  slug = slug === '' || slug === 'berita' ? null : slug;
-
-  function renderArticle() {
-    const article = beritaData.find(b => b.slug === slug);
-    if (!article) {
-      document.getElementById('article-content').innerHTML = '<p>Berita tidak ditemukan.</p>';
-      return;
-    }
-    document.getElementById('article-title').textContent = article.judul;
-    document.getElementById('article-meta').textContent = `Label: ${article.label} | Tanggal: ${article.tanggal}`;
-    if(article.gambar){
-      document.getElementById('article-image').src = article.gambar;
-      document.getElementById('article-image').alt = article.judul;
-      document.getElementById('article-image').style.display = 'block';
-    } else {
-      document.getElementById('article-image').style.display = 'none';
-    }
-    document.getElementById('article-body').innerHTML = article.isi;
-  }
-
-  window.onload = async function() {
-    await init();
-    buildLogoAndTitle();
-    buildMenu();
-    buildHeadlineRolling();
-    buildWidgets();
-
-    if(slug) {
-      renderArticle();
-    } else {
-      document.getElementById('article-content').innerHTML = '<p>Selamat datang di Sarjana. Pilih berita dari menu.</p>';
-    }
-
-    // Footer text
-    document.getElementById('footer-text').textContent = configData.FOOTER_TEXT || '© 2025 Sarjana';
-  };
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>
