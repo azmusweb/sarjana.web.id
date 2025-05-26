@@ -1,62 +1,23 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Berita - Sarjana</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Detail Berita - Sarjana</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <a href="/" id="logo-link" aria-label="Homepage">
-        <img id="site-logo" src="" alt="Logo" style="display:none; max-height:40px;" />
-        <span id="site-name" style="font-weight:bold; font-size:24px;"></span>
-      </a>
-    </div>
-    <nav class="header-right" role="navigation" aria-label="Main menu">
-      <ul id="menu-container" class="menu"></ul>
-    </nav>
-  </header>
+<header>
+  <a href="/" id="logo">Sarjana</a>
+  <nav id="menu"></nav>
+</header>
 
-  <main>
-    <article id="news-article">
-      <h1 id="news-title">Judul Berita</h1>
-      <p id="news-date">Tanggal</p>
-      <img id="news-image" src="" alt="Gambar berita" style="max-width:100%; height:auto; display:none;" />
-      <div id="news-content">
-        <p>Isi berita akan tampil di sini.</p>
-      </div>
-    </article>
-  </main>
+<article id="news-detail" class="news-detail"></article>
 
-  <script src="script.js"></script>
-  <script>
-    // Contoh config dan load menu/logo sama seperti index.html
-    const config = {
-      'SITE_NAME': 'Sarjana',
-      'SITE_LOGO': '',
-      'menu-navigasi': 'Home | /, BERITA (news|red) | /berita/, GURU | /guru/, SEKOLAH | /sekolah/, *Arabic | /arabic/, *Sejarah | /sejarah/, *Beasiswa | /beasiswa/, BLOG | /blog/'
-    };
+<footer>
+  <p id="footer-text"></p>
+</footer>
 
-    initNavigation(config);
-
-    // Contoh load data berita dinamis dari spreadsheet atau API
-    const exampleArticle = {
-      title: 'Contoh Berita Dinamis',
-      date: '2025-05-26',
-      image: 'https://via.placeholder.com/800x400.png?text=Berita+Dinamis',
-      content: `<p>Ini adalah contoh isi berita yang diambil dari database spreadsheet.</p>`
-    };
-
-    document.getElementById('news-title').textContent = exampleArticle.title;
-    document.getElementById('news-date').textContent = exampleArticle.date;
-    if (exampleArticle.image) {
-      const imgEl = document.getElementById('news-image');
-      imgEl.src = exampleArticle.image;
-      imgEl.style.display = 'block';
-    }
-    document.getElementById('news-content').innerHTML = exampleArticle.content;
-  </script>
+<script src="script.js"></script>
 </body>
 </html>
