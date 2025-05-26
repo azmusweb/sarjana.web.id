@@ -1,37 +1,40 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Sarjana News</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sarjana - Website Dinamis</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header>
-  <div class="header-container">
-    <div class="logo" id="logo"><a href="#" id="homeLink">Sarjana</a></div>
-    <nav id="navMenu" class="nav-menu"></nav>
-  </div>
-  <div class="headline-rolling" id="headlineRolling"></div>
-</header>
+  <header>
+    <div class="header-left">
+      <a href="/" id="logo-link" aria-label="Homepage">
+        <img id="site-logo" src="" alt="Logo" style="display:none; max-height:40px;" />
+        <span id="site-name" style="font-weight:bold; font-size:24px;"></span>
+      </a>
+    </div>
+    <nav class="header-right" role="navigation" aria-label="Main menu">
+      <ul id="menu-container" class="menu"></ul>
+    </nav>
+  </header>
 
-<main>
-  <section class="widgets-row-1">
-    <div id="widgetLeft1" class="widget"></div>
-    <div id="widgetLeft2" class="widget"></div>
-    <div id="widgetRight1" class="widget"></div>
-    <div id="widgetRight2" class="widget"></div>
-  </section>
-  <section class="post-list" id="postList"></section>
-  <section class="widgets-row-2">
-    <div id="widgetBlue1" class="widget widget-blue"></div>
-    <div id="widgetBlue2" class="widget widget-blue"></div>
-    <div id="widgetBlue3" class="widget widget-blue"></div>
-  </section>
-</main>
+  <main>
+    <h1>Selamat datang di Sarjana</h1>
+    <p>Ini adalah contoh website dinamis dengan menu dari spreadsheet config.</p>
+  </main>
 
-<footer id="footerText"></footer>
+  <script src="script.js"></script>
+  <script>
+    // Simulasi config di load dari spreadsheet
+    const config = {
+      'SITE_NAME': 'Sarjana',
+      'SITE_LOGO': '',
+      'menu-navigasi': 'Home | /, BERITA (news|red) | /berita/, GURU | /guru/, SEKOLAH | /sekolah/, *Arabic | /arabic/, *Sejarah | /sejarah/, *Beasiswa | /beasiswa/, BLOG | /blog/'
+    };
 
-<script src="script.js"></script>
+    // Init menu dan logo
+    initNavigation(config);
+  </script>
 </body>
 </html>
