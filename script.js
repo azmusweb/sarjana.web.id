@@ -1,223 +1,113 @@
-const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
-const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
+// === Konstanta Spreadsheet ===
+const spreadsheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+const apiKey = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
+const sheetConfig = "Config";
+const sheetNews = "Live Website";
+const baseUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/`;
 
-let configData = {};
-let liveWebsiteData = [];
-
-// Ambil data sheet Google Spreadsheet
+// === Fungsi Fetch Data ===
 async function fetchSheet(sheetName) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-  const response = await fetch(url);
-  const data = await response.json();
-  if (!data.values) return [];
+  const url = `${baseUrl}${sheetName}?key=${apiKey}`;
+  const res = await fetch(url);
+  const data = await res.json();
   return data.values;
 }
 
-// Parse data config jadi objek key-value
-function parseConfig(rawConfig) {
-  const config = {};
-  rawConfig.forEach(([key, value]) => {
-    config[key.trim()] = value ? value.trim() : '';
-  });
-  return config;
-}
-
-// Parsing menu navigasi dari config
-function buildMenu(menuNav) {
-  // Format: "Home | /, BERITA (news|red) | /berita/, GURU | /guru/, ..."
-  const items = menuNav.split(',').map(item => item.trim()).filter(Boolean);
-  const menuItems = items.map(item => {
-    const parts = item.split('|').map(p => p.trim());
-    let titlePart = parts[0];
-    const url = parts[1] || '#';
-
-    let title = titlePart;
-    let label = null;
-    let color = null;
-    const labelMatch = titlePart.match(/\(([^)]+)\)/);
-    if (labelMatch) {
-      const inside = labelMatch[1].split('|');
-      label = inside[0].trim();
-      color = inside[1] ? inside[1].trim() : null;
-      title = titlePart.replace(/\(([^)]+)\)/, '').trim();
-    }
-    return { title, label, color, url };
-  });
-  return menuItems;
-}
-
-// Render menu ke header nav
+// === Render Menu dari CONFIG ===
 function renderMenu(menuItems) {
-  const nav = document.getElementById('menu');
-  nav.innerHTML = '';
-  menuItems.forEach(item => {
-    const a = document.createElement('a');
-    // Hilangkan www dan .html sesuai permintaan
-    let href = item.url.replace(/\.html$/i, '');
-    href = href.replace(/^www\./i, '');
-    a.href = href;
-    a.textContent = item.title;
-    if (item.color) {
-      a.style.color = item.color;
-      a.style.fontWeight = '700';
-    }
-    nav.appendChild(a);
-  });
+  const nav = document.getElementById("menu");
+  nav.innerHTML = menuItems
+    .map(
+      (item) => `<a href="#" class="menu-link">${item}</a>`
+    )
+    .join(" ");
 }
 
-// Render logo situs
-function renderLogo(siteName, siteLogo) {
-  const logo = document.getElementById('logo');
-  if (siteLogo) {
-    const img = document.createElement('img');
-    img.src = siteLogo;
-    img.alt = siteName;
-    img.style.height = '40px';
-    img.style.verticalAlign = 'middle';
-    logo.innerHTML = '';
-    logo.appendChild(img);
-  } else {
-    logo.textContent = siteName;
-  }
-  logo.href = '/';
+// === Render Headline Rolling ===
+function renderHeadlineRolling(headlines) {
+  const container = document.getElementById("headline-rolling");
+  container.innerHTML =
+    '<marquee>' +
+    headlines.map((h) => `<span>${h}</span>`).join(" | ") +
+    '</marquee>';
 }
 
-// Filter data berita berdasarkan label dan status aktif
-function filterByLabel(label) {
-  return liveWebsiteData.filter(item => 
-    item.Label.toLowerCase() === label.toLowerCase() && 
-    item.Status_View.toLowerCase() === 'active'
-  );
+// === Render Footer ===
+function renderFooter(text) {
+  const footer = document.getElementById("footer-text");
+  footer.textContent = text;
 }
 
-// Membuat elemen artikel berita singkat
-function createArticle(item) {
-  const article = document.createElement('article');
-  article.className = 'news-item';
-  article.innerHTML = `
-    <h3><a href="/${item.Slug}">${item.Judul}</a></h3>
-    <p>${item.Meta_Deskripsi}</p>
-  `;
-  return article;
+// === Render Widget ===
+function renderWidget(id, html) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = html;
 }
 
-// Render widget berdasarkan label widget di config
-function renderWidget(id, label) {
-  const container = document.getElementById(id);
-  container.innerHTML = '';
-  if (!label) return;
-  const items = filterByLabel(label);
-  if (items.length === 0) {
-    container.textContent = `Tidak ada berita untuk kategori ${label}`;
+// === Render Daftar Berita ===
+function renderNewsList(newsItems) {
+  const container = document.getElementById("news-list");
+  if (!container) return;
+  container.innerHTML = newsItems
+    .filter((row, i) => i > 0 && row[6] !== "nonaktif")
+    .map(
+      (row) => `
+    <article class="news-card">
+      <a href="berita.html?slug=${row[4]}">
+        <img src="${row[2]}" alt="${row[0]}" />
+        <h2>${row[0]}</h2>
+        <p>${row[5]}</p>
+      </a>
+    </article>
+  `
+    )
+    .join("");
+}
+
+// === Render Detail Berita ===
+function renderNewsDetail(newsItems) {
+  const container = document.getElementById("news-detail");
+  if (!container) return;
+  const slug = new URLSearchParams(window.location.search).get("slug");
+  const berita = newsItems.find((row) => row[4] === slug);
+  if (!berita) {
+    container.innerHTML = "<p>Berita tidak ditemukan.</p>";
     return;
   }
-  items.slice(0, 5).forEach(item => {
-    const art = createArticle(item);
-    container.appendChild(art);
-  });
-}
-
-// Render rolling headline jika diaktifkan
-function renderHeadlineRolling() {
-  if (configData.HEADLINE_ROLLING?.toLowerCase() !== 'true') return;
-  const container = document.getElementById('headline-rolling');
-  const headlines = liveWebsiteData.filter(item => 
-    item.Label.toLowerCase() === configData.HEADLINE_LABEL?.toLowerCase() && 
-    item.Status_View.toLowerCase() === 'active'
-  );
-  if (headlines.length === 0) {
-    container.style.display = 'none';
-    return;
-  }
-  container.style.display = 'block';
-  container.textContent = headlines.map(h => h.Judul).join('  •  ');
-  // Simple marquee effect (scroll)
-  let pos = container.offsetWidth;
-  function scroll() {
-    pos--;
-    if (pos < -container.scrollWidth) pos = container.offsetWidth;
-    container.style.transform = `translateX(${pos}px)`;
-    requestAnimationFrame(scroll);
-  }
-  scroll();
-}
-
-// Render halaman utama index.html
-function renderIndex() {
-  renderLogo(configData.SITE_NAME, configData.SITE_LOGO);
-  renderMenu(buildMenu(configData['menu-navigasi'] || ''));
-
-  // Render widgets kiri dan kanan sesuai config
-  renderWidget('widget-left', configData.WIDGET_LABEL_1);
-  renderWidget('widget-right', configData.WIDGET_LABEL_2);
-  
-  // Render blue widgets jika ada
-  renderWidget('widget-blue-1', configData.WIDGET_LABEL_1);
-  renderWidget('widget-blue-2', configData.WIDGET_LABEL_2);
-  renderWidget('widget-blue-3', configData.WIDGET_LABEL_3);
-
-  renderHeadlineRolling();
-}
-
-// Render halaman detail berita di berita.html
-function renderDetail(slug) {
-  renderLogo(configData.SITE_NAME, configData.SITE_LOGO);
-  renderMenu(buildMenu(configData['menu-navigasi'] || ''));
-
-  const articleContainer = document.getElementById('news-detail');
-  const news = liveWebsiteData.find(item => item.Slug.toLowerCase() === slug.toLowerCase());
-  if (!news) {
-    articleContainer.innerHTML = '<p>Berita tidak ditemukan.</p>';
-    return;
-  }
-  articleContainer.innerHTML = `
-    <h1>${news.Judul}</h1>
-    ${news.Gambar ? `<img src="${news.Gambar}" alt="${news.Judul}" />` : ''}
-    <p>${news.Body}</p>
+  container.innerHTML = `
+    <article>
+      <h1>${berita[0]}</h1>
+      <img src="${berita[2]}" alt="${berita[0]}" />
+      <div>${berita[3]}</div>
+      <small>${berita[7]}</small>
+    </article>
   `;
 }
 
-// Ambil slug dari URL tanpa ekstensi
-function getSlugFromURL() {
-  const path = window.location.pathname;
-  const cleanPath = path.replace(/^\/|\/$/g, ''); // hapus slash depan belakang
-  return cleanPath.toLowerCase();
+// === Inisialisasi Website ===
+async function initWebsite() {
+  const [configData, newsData] = await Promise.all([
+    fetchSheet(sheetConfig),
+    fetchSheet(sheetNews),
+  ]);
+
+  const config = Object.fromEntries(
+    configData.map(([key, value]) => [key.toLowerCase(), value])
+  );
+
+  if (config.logo) document.getElementById("logo").textContent = config.logo;
+  if (config.menu) renderMenu(config.menu.split(","));
+  if (config.headline) renderHeadlineRolling(config.headline.split(","));
+  if (config.footer) renderFooter(config.footer);
+
+  renderWidget("widget-left", config["widget kiri"] || "");
+  renderWidget("widget-right", config["widget kanan"] || "");
+  renderWidget("widget-blue-1", config["widget biru 1"] || "");
+  renderWidget("widget-blue-2", config["widget biru 2"] || "");
+  renderWidget("widget-blue-3", config["widget biru 3"] || "");
+
+  if (document.getElementById("news-list")) renderNewsList(newsData);
+  if (document.getElementById("news-detail")) renderNewsDetail(newsData);
 }
 
-// Inisialisasi website
-async function init() {
-  const rawConfig = await fetchSheet('Config');
-  configData = parseConfig(rawConfig);
-
-  const rawLiveWebsite = await fetchSheet('Live Website');
-  // Asumsikan header kolom di baris pertama
-  const headers = rawLiveWebsite[0];
-  liveWebsiteData = rawLiveWebsite.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((header, i) => {
-      obj[header] = row[i] || '';
-    });
-    return obj;
-  });
-
-  const slug = getSlugFromURL();
-
-  if (window.location.pathname.endsWith('berita') || slug === 'berita') {
-    // jika url /berita/ render halaman berita list (index.html bisa saja)
-    renderIndex();
-  } else if (window.location.pathname === '/' || slug === '') {
-    renderIndex();
-  } else {
-    // selain itu render detail berita
-    renderDetail(slug);
-  }
-
-  // Footer text
-  const footer = document.getElementById('footer-text');
-  if (footer && configData.FOOTER_TEXT) {
-    footer.textContent = configData.FOOTER_TEXT;
-  }
-}
-
-// Jalankan inisialisasi saat halaman siap
-window.addEventListener('DOMContentLoaded', init);
+initWebsite();
