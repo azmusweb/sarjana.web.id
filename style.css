@@ -1,40 +1,33 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: #f9f9f9;
-  color: #333;
-}
-header {
-  background: white;
-  border-bottom: 1px solid #ccc;
-  padding: 1rem;
+/* === Tata Letak Beranda === */
+.content-layout {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
-.logo {
-  font-weight: bold;
-  font-size: 1.5rem;
-  color: #4285f4;
+
+.left-widgets,
+.right-widgets {
+  width: 20%;
 }
-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  color: #333;
+
+.main-posts {
+  flex: 1;
 }
-main {
+
+/* Triple widget biru */
+.triple-widgets {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.triple-widgets .widget {
+  flex: 1;
   padding: 1rem;
+  border-radius: 8px;
 }
-.berita-utama {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  background: #eaf1fb;
-  padding: 1rem;
-  border-left: 5px solid #4285f4;
-}
-footer {
-  background: #eee;
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.9rem;
+
+.triple-widgets .widget.blue {
+  background-color: #e3f2fd;
+  border: 1px solid #90caf9;
 }
