@@ -1,141 +1,199 @@
 const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
 const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
 
-async function fetchSheet(sheetName) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
+let configData = {};
+let beritaData = [];
+
+async function fetchSpreadsheet(sheetName) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(sheetName)}?key=${API_KEY}`;
   const response = await fetch(url);
-  if (!response.ok) throw new Error('Failed to fetch ' + sheetName);
+  if (!response.ok) throw new Error('Gagal mengambil data ' + sheetName);
   const data = await response.json();
-  return data.values;
+  return data.values || [];
 }
 
-function parseMenu(config) {
-  // config string contoh: "Menu1|Sub1,Sub2;Menu2|Sub3,Sub4"
-  // Tapi sesuai request user, format adalah: "Menu1,Menu2|Sub1,Sub2"
-  // Jadi, menu dan submenu dipisah tanda |, submenu dipisah koma
-  let menus = [];
-  if (!config) return menus;
-  let parts = config.split('|');
-  let mainMenus = parts[0].split(',');
-  let subMenus = parts[1] ? parts[1].split(',') : [];
-  mainMenus.forEach(menu => {
-    menus.push({title: menu.trim(), submenu: []});
+async function loadConfig() {
+  const rows = await fetchSpreadsheet('Config');
+  rows.slice(1).forEach(row => {
+    if (row.length >= 2) configData[row[0].trim()] = row[1].trim();
   });
-  // Karena format submenu tidak spesifik, saya buat submenu kosong dulu,
-  // nanti bisa dikembangkan sesuai data di config.
-  return menus;
 }
 
-function createMenuDOM(menus) {
-  const nav = document.getElementById('main-nav');
-  nav.innerHTML = '';
-  menus.forEach(menu => {
-    const li = document.createElement('div');
+async function loadBerita() {
+  const rows = await fetchSpreadsheet('Live Website');
+  beritaData = rows.slice(1).map(row => ({
+    judul: row[0] || '',
+    label: row[1] || '',
+    gambar: row[2] || '',
+    isi: row[3] || '',
+    slug: row[4] || '',
+    meta: row[5] || '',
+    view: row[6] || '',
+    tanggal: row[7] || '',
+    type: row[8] || '',
+  }));
+}
+
+function buildMenu() {
+  const menuContainer = document.getElementById('main-nav');
+  menuContainer.innerHTML = '';
+  if (!configData.MENU) return;
+
+  // Format MENU: Menu Utama,link,submenu|Menu2,link,submenu
+  const menuGroups = configData.MENU.split('|').map(item => item.trim());
+
+  menuGroups.forEach(menuItem => {
+    const parts = menuItem.split(',');
+    if (parts.length < 2) return;
+
+    const mainMenuName = parts[0];
+    const mainMenuLink = parts[1];
+    const subMenus = parts.slice(2);
+
+    const li = document.createElement('li');
     li.className = 'menu-item';
+
     const a = document.createElement('a');
-    a.href = '#';
-    a.textContent = menu.title;
+    a.href = mainMenuLink;
+    a.textContent = mainMenuName;
     li.appendChild(a);
 
-    if (menu.submenu && menu.submenu.length > 0) {
-      const submenuDiv = document.createElement('div');
-      submenuDiv.className = 'submenu';
-      menu.submenu.forEach(sub => {
-        const suba = document.createElement('a');
-        suba.href = '#';
-        suba.textContent = sub;
-        submenuDiv.appendChild(suba);
+    if (subMenus.length > 0) {
+      const subUl = document.createElement('ul');
+      subUl.className = 'submenu';
+
+      subMenus.forEach(subSlug => {
+        // Cari berita yang slugnya sama dengan subSlug
+        const subBerita = beritaData.find(b => b.slug === subSlug);
+        if (!subBerita) return;
+
+        const subLi = document.createElement('li');
+        const subA = document.createElement('a');
+        subA.href = `berita.html?slug=${subBerita.slug}`;
+        subA.textContent = subBerita.judul;
+        subLi.appendChild(subA);
+        subUl.appendChild(subLi);
       });
-      li.appendChild(submenuDiv);
+      li.appendChild(subUl);
     }
-    nav.appendChild(li);
+
+    menuContainer.appendChild(li);
   });
 }
 
-function setLogoAndTitle(config) {
-  const logoUrl = config['logo_url'] || '';
-  const siteName = config['site_name'] || 'Website';
+function setupLogoAndTitle() {
+  const logoUrl = configData.SITE_LOGO || '';
+  const siteName = configData.SITE_NAME || 'Website';
+
   const logoImg = document.getElementById('site-logo');
   const siteNameSpan = document.getElementById('site-name');
+
   if (logoUrl) {
     logoImg.src = logoUrl;
     logoImg.style.display = 'inline-block';
-    siteNameSpan.textContent = '';
+    siteNameSpan.style.display = 'none';
   } else {
     logoImg.style.display = 'none';
     siteNameSpan.textContent = siteName;
+    siteNameSpan.style.display = 'inline-block';
   }
 }
 
-function createHeadlineRolling(beritaData) {
+function createHeadlineRolling() {
+  if (configData.HEADLINE_ROLLING !== 'true') return;
+  if (!configData.HEADLINE_LABEL) return;
+
+  const label = configData.HEADLINE_LABEL;
+  const headlines = beritaData.filter(b => b.label === label);
+
   const marquee = document.getElementById('headline-marquee');
+  if (!marquee) return;
+
   marquee.innerHTML = '';
-  beritaData.forEach(row => {
-    const judul = row[0];
-    if (judul) {
-      const a = document.createElement('a');
-      a.href = 'berita.html?slug=' + (row[4] || '#');
-      a.textContent = judul;
-      a.style.marginRight = '30px';
-      marquee.appendChild(a);
-    }
+
+  headlines.forEach((news, idx) => {
+    const a = document.createElement('a');
+    a.href = `berita.html?slug=${news.slug}`;
+    a.textContent = news.judul;
+    a.style.marginRight = '40px';
+    marquee.appendChild(a);
   });
 }
 
-function createWidgets(widgetContainers, beritaData, labelFilter) {
-  widgetContainers.forEach(({element, label}) => {
-    element.innerHTML = '';
-    let filtered = beritaData.filter(row => row[1] && row[1].toLowerCase().includes(label.toLowerCase()));
-    filtered.slice(0, 5).forEach(row => {
-      const div = document.createElement('div');
-      div.className = 'widget-item';
-      div.textContent = row[0];
-      element.appendChild(div);
+function buildWidgets() {
+  // Widget kiri
+  const leftWidgetsIds = (configData.WIDGET_LEFT || '').split(',').map(w => w.trim()).filter(Boolean);
+  const leftContainer = document.getElementById('left-widgets');
+  leftContainer.innerHTML = '';
+  leftWidgetsIds.forEach(widgetName => {
+    // Ambil berita sesuai label widget (widgetName dipakai sebagai label)
+    const widgetBerita = beritaData.filter(b => b.label === widgetName);
+    if (widgetBerita.length === 0) return;
+
+    const div = document.createElement('div');
+    div.className = 'widget-item';
+    div.innerHTML = `<h3>${widgetName}</h3>`;
+    widgetBerita.slice(0, 2).forEach(b => {
+      const p = document.createElement('p');
+      p.innerHTML = `<a href="berita.html?slug=${b.slug}">${b.judul}</a>`;
+      div.appendChild(p);
     });
+    leftContainer.appendChild(div);
   });
-}
 
-async function main() {
-  try {
-    // Ambil Config dan Live Website
-    const configData = await fetchSheet('Config');
-    const liveData = await fetchSheet('Live Website');
+  // Widget kanan
+  const rightWidgetsIds = (configData.WIDGET_RIGHT || '').split(',').map(w => w.trim()).filter(Boolean);
+  const rightContainer = document.getElementById('right-widgets');
+  rightContainer.innerHTML = '';
+  rightWidgetsIds.forEach(widgetName => {
+    const widgetBerita = beritaData.filter(b => b.label === widgetName);
+    if (widgetBerita.length === 0) return;
 
-    // Parsing config ke object kunci-nilai
-    const config = {};
-    configData.forEach(row => {
-      if (row[0]) config[row[0].toLowerCase()] = row[1] || '';
+    const div = document.createElement('div');
+    div.className = 'widget-item';
+    div.innerHTML = `<h3>${widgetName}</h3>`;
+    widgetBerita.slice(0, 2).forEach(b => {
+      const p = document.createElement('p');
+      p.innerHTML = `<a href="berita.html?slug=${b.slug}">${b.judul}</a>`;
+      div.appendChild(p);
     });
+    rightContainer.appendChild(div);
+  });
 
-    // Setup logo dan nama web
-    setLogoAndTitle({
-      logo_url: config['logo'] || '',
-      site_name: config['site_name'] || 'Sarjana'
+  // Widget biru 3 bilah
+  for (let i = 1; i <= 3; i++) {
+    const widgetLabelKey = `WIDGET_LABEL_${i}`;
+    const widgetBlueKey = `WIDGET_BLUE_${i}`;
+    const widgetLabel = configData[widgetLabelKey];
+    const widgetBlueContainer = document.getElementById(`widget-blue-${i}`);
+
+    if (!widgetLabel || !widgetBlueContainer) continue;
+
+    const widgetBerita = beritaData.filter(b => b.label === widgetLabel);
+    widgetBlueContainer.innerHTML = `<h3>${widgetLabel}</h3>`;
+
+    widgetBerita.slice(0, 3).forEach(b => {
+      const p = document.createElement('p');
+      p.innerHTML = `<a href="berita.html?slug=${b.slug}">${b.judul}</a>`;
+      widgetBlueContainer.appendChild(p);
     });
-
-    // Buat menu dari config menu (contoh: config menu="Home,News,Contact|Sub1,Sub2")
-    const menus = parseMenu(config['menu'] || '');
-    createMenuDOM(menus);
-
-    // Headline rolling
-    createHeadlineRolling(liveData.slice(1));
-
-    // Widget setup (contoh label yang diambil widget dari config widget-label1, widget-label2)
-    const leftWidgets = document.getElementById('left-widgets');
-    const rightWidgets = document.getElementById('right-widgets');
-    const blueWidget1 = document.getElementById('widget-blue-1');
-    const blueWidget2 = document.getElementById('widget-blue-2');
-    const blueWidget3 = document.getElementById('widget-blue-3');
-
-    createWidgets([{element: leftWidgets, label: config['widget-label-left'] || ''}], liveData.slice(1));
-    createWidgets([{element: rightWidgets, label: config['widget-label-right'] || ''}], liveData.slice(1));
-    createWidgets([{element: blueWidget1, label: config['widget-label-blue1'] || ''}], liveData.slice(1));
-    createWidgets([{element: blueWidget2, label: config['widget-label-blue2'] || ''}], liveData.slice(1));
-    createWidgets([{element: blueWidget3, label: config['widget-label-blue3'] || ''}], liveData.slice(1));
-
-  } catch (e) {
-    console.error(e);
   }
 }
 
-window.onload = main;
+async function init() {
+  try {
+    await loadConfig();
+    await loadBerita();
+
+    setupLogoAndTitle();
+    buildMenu();
+    createHeadlineRolling();
+    buildWidgets();
+
+    // Anda bisa tambahkan inisialisasi lain di sini
+  } catch (error) {
+    console.error('Error initializing website:', error);
+  }
+}
+
+window.onload = init;
