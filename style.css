@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+body {
+  background: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+header {
+  background: white;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary, #4285F4);
+  text-decoration: none;
+}
+header .logo img {
+  height: 40px;
+  vertical-align: middle;
+}
+nav.menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-weight: bold;
+  font-size: 14px;
+}
+nav.menu > div {
+  position: relative;
+}
+nav.menu a {
+  color: #333;
+  text-decoration: none;
+  padding: 10px;
+}
+nav.menu .submenu {
+  display: none;
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  min-width: 150px;
+  top: 100%;
+  left: 0;
+  z-index: 999;
+}
+nav.menu div:hover .submenu {
+  display: block;
+}
+nav.menu .submenu a {
+  display: block;
+  padding: 10px;
+  color: #333;
+  white-space: nowrap;
+}
+.headline {
+  background: var(--primary, #4285F4);
+  color: white;
+  padding: 10px 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.headline span {
+  animation: scroll-left 15s linear infinite;
+  display: inline-block;
+}
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+.container {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+.widget, .widget-blue {
+  background: white;
+  padding: 15px;
+  border: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+.widget-blue {
+  background: #e8f0fe;
+  border-left: 5px solid var(--primary, #4285F4);
+}
+.bottom-widgets {
+  display: flex;
+  gap: 20px;
+  margin-top: 40px;
+}
+.bottom-widgets .widget-blue {
+  flex: 1;
+}
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.article-item {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 15px;
+}
+.article-item h2 {
+  font-size: 18px;
+  color: var(--primary, #4285F4);
+}
+.article-item p {
+  font-size: 14px;
+  color: #555;
+}
+footer {
+  text-align: center;
+  padding: 30px 10px;
+  background: white;
+  color: #777;
+  font-size: 14px;
+  border-top: 1px solid #ddd;
+  margin-top: 40px;
+}
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  nav.menu {
+    flex-direction: column;
+    gap: 0;
+  }
+  nav.menu > div {
+    margin-bottom: 10px;
+  }
+  .bottom-widgets {
+    flex-direction: column;
+  }
+}
