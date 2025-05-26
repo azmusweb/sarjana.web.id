@@ -1,40 +1,35 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sarjana - Website Dinamis</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sarjana - Berita Dinamis</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="header-left">
-      <a href="/" id="logo-link" aria-label="Homepage">
-        <img id="site-logo" src="" alt="Logo" style="display:none; max-height:40px;" />
-        <span id="site-name" style="font-weight:bold; font-size:24px;"></span>
-      </a>
-    </div>
-    <nav class="header-right" role="navigation" aria-label="Main menu">
-      <ul id="menu-container" class="menu"></ul>
-    </nav>
-  </header>
+<header>
+  <a href="/" id="logo">Sarjana</a>
+  <nav id="menu"></nav>
+</header>
 
-  <main>
-    <h1>Selamat datang di Sarjana</h1>
-    <p>Ini adalah contoh website dinamis dengan menu dari spreadsheet config.</p>
-  </main>
+<div id="headline-rolling" class="headline-rolling"></div>
 
-  <script src="script.js"></script>
-  <script>
-    // Simulasi config di load dari spreadsheet
-    const config = {
-      'SITE_NAME': 'Sarjana',
-      'SITE_LOGO': '',
-      'menu-navigasi': 'Home | /, BERITA (news|red) | /berita/, GURU | /guru/, SEKOLAH | /sekolah/, *Arabic | /arabic/, *Sejarah | /sejarah/, *Beasiswa | /beasiswa/, BLOG | /blog/'
-    };
+<div class="container">
+  <aside class="sidebar left" id="widget-left"></aside>
+  <main id="main-content"></main>
+  <aside class="sidebar right" id="widget-right"></aside>
+</div>
 
-    // Init menu dan logo
-    initNavigation(config);
-  </script>
+<div class="widget-blue-container">
+  <section class="widget-blue" id="widget-blue-1"></section>
+  <section class="widget-blue" id="widget-blue-2"></section>
+  <section class="widget-blue" id="widget-blue-3"></section>
+</div>
+
+<footer>
+  <p id="footer-text"></p>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
