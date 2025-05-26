@@ -1,1 +1,0 @@
-// script.js untuk interaksi dan fetch dari spreadsheet
