@@ -1,26 +1,18 @@
-# Sarjana News Website
+# Website Berita Dinamis
 
-Website berita dinamis dengan data dan konfigurasi langsung dari Google Spreadsheet.
-
-## Cara Deploy
-1. Clone repo ini ke GitHub atau lokal.
-2. Pastikan spreadsheet ID dan API Key sudah benar di file `script.js`.
-3. Upload ke GitHub Pages atau hosting statis lainnya.
-4. Akses website lewat `index.html`
-
-## Struktur File
-- index.html : Halaman utama berita
-- berita.html : Halaman detail berita
-- script.js : Script untuk load data spreadsheet dan interaksi
-- style.css : Styling website responsif ala Detik.com dengan nuansa Google
-- README.md : Dokumentasi proyek
+Website berita dengan data dan konfigurasi dari Google Spreadsheet. Mirip Detik.com dengan nuansa warna bersih ala Google.
 
 ## Konfigurasi Spreadsheet
-Spreadsheet dengan ID: `1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww`
+Spreadsheet ID: 1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww  
+API Key: AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs
 
-Sheet CONFIG: Atur SITE_NAME, SITE_LOGO, MENU, MENU_LINK, WIDGET_..., COLOR_PRIMARY, HEADLINE_ROLLING, dll
+## Struktur Files
+- index.html : halaman utama
+- berita.html : halaman detail berita
+- script.js : logika pemanggilan data dan interaksi
+- style.css : styling tampilan
 
-Sheet Live Website: Berisi data berita, dengan kolom seperti Judul, Label, Gambar, Isi, Slug, Meta Deskripsi, View, Tanggal, Type
-
-## Lisensi
-Open source, bebas digunakan dan dikembangkan
+## Petunjuk Penggunaan
+- Upload semua file ke repository GitHub
+- Sesuaikan data di spreadsheet (Config & Live Website)
+- Pastikan API key dan spreadsheet ID sesuai
