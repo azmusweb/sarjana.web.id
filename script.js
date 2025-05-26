@@ -1,73 +1,141 @@
-// script.js
+const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
+const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
 
-const SPREADSHEET_ID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-const API_KEY = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
-const CONFIG_SHEET = "Config";
-const CONTENT_SHEET = "Live Website";
-
-const fetchSheet = async (sheetName) => {
+async function fetchSheet(sheetName) {
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values;
-  const headers = rows.shift();
-  return rows.map((row) => Object.fromEntries(headers.map((h, i) => [h, row[i] || ""])));
-};
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch ' + sheetName);
+  const data = await response.json();
+  return data.values;
+}
 
-const renderMenu = (configs) => {
-  const nav = document.getElementById("main-nav");
-  const menuConfig = configs.find((c) => c.FUNGSI.toLowerCase() === "menu");
-  if (!menuConfig) return;
+function parseMenu(config) {
+  // config string contoh: "Menu1|Sub1,Sub2;Menu2|Sub3,Sub4"
+  // Tapi sesuai request user, format adalah: "Menu1,Menu2|Sub1,Sub2"
+  // Jadi, menu dan submenu dipisah tanda |, submenu dipisah koma
+  let menus = [];
+  if (!config) return menus;
+  let parts = config.split('|');
+  let mainMenus = parts[0].split(',');
+  let subMenus = parts[1] ? parts[1].split(',') : [];
+  mainMenus.forEach(menu => {
+    menus.push({title: menu.trim(), submenu: []});
+  });
+  // Karena format submenu tidak spesifik, saya buat submenu kosong dulu,
+  // nanti bisa dikembangkan sesuai data di config.
+  return menus;
+}
 
-  const items = menuConfig.WEBSITE.split(',');
-  const html = items.map((item) => {
-    if (item.includes("|")) {
-      const [main, ...subs] = item.split('|');
-      const submenu = subs.map(s => `<li><a href="#">${s.trim()}</a></li>`).join('');
-      return `<div class="dropdown">
-        <button class="dropbtn">${main.trim()}</button>
-        <div class="dropdown-content">${submenu}</div>
-      </div>`;
-    } else {
-      return `<a href="#">${item.trim()}</a>`;
+function createMenuDOM(menus) {
+  const nav = document.getElementById('main-nav');
+  nav.innerHTML = '';
+  menus.forEach(menu => {
+    const li = document.createElement('div');
+    li.className = 'menu-item';
+    const a = document.createElement('a');
+    a.href = '#';
+    a.textContent = menu.title;
+    li.appendChild(a);
+
+    if (menu.submenu && menu.submenu.length > 0) {
+      const submenuDiv = document.createElement('div');
+      submenuDiv.className = 'submenu';
+      menu.submenu.forEach(sub => {
+        const suba = document.createElement('a');
+        suba.href = '#';
+        suba.textContent = sub;
+        submenuDiv.appendChild(suba);
+      });
+      li.appendChild(submenuDiv);
     }
-  }).join("");
-  nav.innerHTML = html;
-};
+    nav.appendChild(li);
+  });
+}
 
-const renderWidgets = (configs, posts) => {
-  const getWidgets = (fungsi) => {
-    const c = configs.find((x) => x.FUNGSI.toLowerCase() === fungsi.toLowerCase());
-    return c ? c.WEBSITE.split(',') : [];
-  };
+function setLogoAndTitle(config) {
+  const logoUrl = config['logo_url'] || '';
+  const siteName = config['site_name'] || 'Website';
+  const logoImg = document.getElementById('site-logo');
+  const siteNameSpan = document.getElementById('site-name');
+  if (logoUrl) {
+    logoImg.src = logoUrl;
+    logoImg.style.display = 'inline-block';
+    siteNameSpan.textContent = '';
+  } else {
+    logoImg.style.display = 'none';
+    siteNameSpan.textContent = siteName;
+  }
+}
 
-  const widgetArea = (id, labels) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const html = posts.filter(p => labels.includes(p.Label)).map(post => `
-      <div class="widget-item">
-        <h4>${post.Judul}</h4>
-        <p>${post.Body.substring(0, 100)}...</p>
-      </div>
-    `).join('');
-    el.innerHTML = html;
-  };
+function createHeadlineRolling(beritaData) {
+  const marquee = document.getElementById('headline-marquee');
+  marquee.innerHTML = '';
+  beritaData.forEach(row => {
+    const judul = row[0];
+    if (judul) {
+      const a = document.createElement('a');
+      a.href = 'berita.html?slug=' + (row[4] || '#');
+      a.textContent = judul;
+      a.style.marginRight = '30px';
+      marquee.appendChild(a);
+    }
+  });
+}
 
-  widgetArea('left-widgets', getWidgets('widget kiri'));
-  widgetArea('right-widgets', getWidgets('widget kanan'));
-  widgetArea('widget-blue-1', getWidgets('widget bawah 1'));
-  widgetArea('widget-blue-2', getWidgets('widget bawah 2'));
-  widgetArea('widget-blue-3', getWidgets('widget bawah 3'));
-};
+function createWidgets(widgetContainers, beritaData, labelFilter) {
+  widgetContainers.forEach(({element, label}) => {
+    element.innerHTML = '';
+    let filtered = beritaData.filter(row => row[1] && row[1].toLowerCase().includes(label.toLowerCase()));
+    filtered.slice(0, 5).forEach(row => {
+      const div = document.createElement('div');
+      div.className = 'widget-item';
+      div.textContent = row[0];
+      element.appendChild(div);
+    });
+  });
+}
 
-const init = async () => {
-  const [configs, posts] = await Promise.all([
-    fetchSheet(CONFIG_SHEET),
-    fetchSheet(CONTENT_SHEET)
-  ]);
+async function main() {
+  try {
+    // Ambil Config dan Live Website
+    const configData = await fetchSheet('Config');
+    const liveData = await fetchSheet('Live Website');
 
-  renderMenu(configs);
-  renderWidgets(configs, posts);
-};
+    // Parsing config ke object kunci-nilai
+    const config = {};
+    configData.forEach(row => {
+      if (row[0]) config[row[0].toLowerCase()] = row[1] || '';
+    });
 
-init();
+    // Setup logo dan nama web
+    setLogoAndTitle({
+      logo_url: config['logo'] || '',
+      site_name: config['site_name'] || 'Sarjana'
+    });
+
+    // Buat menu dari config menu (contoh: config menu="Home,News,Contact|Sub1,Sub2")
+    const menus = parseMenu(config['menu'] || '');
+    createMenuDOM(menus);
+
+    // Headline rolling
+    createHeadlineRolling(liveData.slice(1));
+
+    // Widget setup (contoh label yang diambil widget dari config widget-label1, widget-label2)
+    const leftWidgets = document.getElementById('left-widgets');
+    const rightWidgets = document.getElementById('right-widgets');
+    const blueWidget1 = document.getElementById('widget-blue-1');
+    const blueWidget2 = document.getElementById('widget-blue-2');
+    const blueWidget3 = document.getElementById('widget-blue-3');
+
+    createWidgets([{element: leftWidgets, label: config['widget-label-left'] || ''}], liveData.slice(1));
+    createWidgets([{element: rightWidgets, label: config['widget-label-right'] || ''}], liveData.slice(1));
+    createWidgets([{element: blueWidget1, label: config['widget-label-blue1'] || ''}], liveData.slice(1));
+    createWidgets([{element: blueWidget2, label: config['widget-label-blue2'] || ''}], liveData.slice(1));
+    createWidgets([{element: blueWidget3, label: config['widget-label-blue3'] || ''}], liveData.slice(1));
+
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+window.onload = main;
