@@ -1,85 +1,81 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Halaman Berita" />
-  <title>Berita - Sarjana</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Berita - Sarjana</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <header>
-  <a id="branding" href="index.html">
-    <img id="site-logo" src="" alt="Logo" style="display:none" />
+  <a id="logo-link" href="./">
+    <img id="site-logo" src="" alt="Logo" />
     <span id="site-name"></span>
   </a>
-  <nav id="main-nav">
-    <!-- Menu akan otomatis terisi oleh script.js -->
+  <nav>
+    <ul id="main-nav"></ul>
   </nav>
 </header>
 
-<section class="headline-wrapper">
+<section id="headline-bar">
   <div id="headline-marquee"></div>
 </section>
 
-<section id="posts">
-  <!-- Isi berita detail akan dimuat oleh script.js -->
-  <article class="post-item">
-    <h2 id="news-title">Loading...</h2>
-    <img id="news-image" src="" alt="" style="max-width: 100%; height: auto; margin-top: 10px; display:none" />
-    <p id="news-content"></p>
+<main style="padding: 20px; max-width: 900px; margin: 0 auto;">
+  <article id="article-content">
+    <h1 id="article-title"></h1>
+    <p id="article-meta" style="color: #666; font-size: 0.9rem;"></p>
+    <img id="article-image" src="" alt="" style="max-width: 100%; margin: 20px 0;" />
+    <div id="article-body"></div>
   </article>
-</section>
+</main>
 
-<section class="home-widgets">
-  <div class="widget-column" id="left-widgets"></div>
-  <div class="widget-column" id="right-widgets"></div>
-</section>
-
-<section class="widget-blue-section">
-  <div class="widget-box blue" id="widget-blue-1"></div>
-  <div class="widget-box blue" id="widget-blue-2"></div>
-  <div class="widget-box blue" id="widget-blue-3"></div>
-</section>
+<footer>
+  <p id="footer-text"></p>
+</footer>
 
 <script src="script.js"></script>
 <script>
-  const SPREADSHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
-  const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
+  // Ambil slug dari URL tanpa .html
+  const urlParams = new URLSearchParams(window.location.search);
+  let slug = urlParams.get('slug') || window.location.pathname.split('/').pop().replace('.html', '');
+  slug = slug === '' || slug === 'berita' ? null : slug;
 
-  function getSlug() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('slug') || '';
-  }
-
-  async function loadBeritaDetail() {
-    try {
-      const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Live Website?key=${API_KEY}`);
-      const json = await response.json();
-      const rows = json.values.slice(1);
-      const slug = getSlug();
-      const berita = rows.find(row => row[4] === slug);
-
-      if (berita) {
-        document.getElementById('news-title').textContent = berita[0] || 'Judul kosong';
-        if (berita[2]) {
-          const img = document.getElementById('news-image');
-          img.src = berita[2];
-          img.style.display = 'block';
-          img.alt = berita[0] || 'Gambar berita';
-        }
-        document.getElementById('news-content').innerHTML = berita[3] || 'Isi berita kosong';
-      } else {
-        document.getElementById('news-title').textContent = 'Berita tidak ditemukan';
-      }
-    } catch (error) {
-      console.error(error);
-      document.getElementById('news-title').textContent = 'Terjadi kesalahan saat memuat berita';
+  function renderArticle() {
+    const article = beritaData.find(b => b.slug === slug);
+    if (!article) {
+      document.getElementById('article-content').innerHTML = '<p>Berita tidak ditemukan.</p>';
+      return;
     }
+    document.getElementById('article-title').textContent = article.judul;
+    document.getElementById('article-meta').textContent = `Label: ${article.label} | Tanggal: ${article.tanggal}`;
+    if(article.gambar){
+      document.getElementById('article-image').src = article.gambar;
+      document.getElementById('article-image').alt = article.judul;
+      document.getElementById('article-image').style.display = 'block';
+    } else {
+      document.getElementById('article-image').style.display = 'none';
+    }
+    document.getElementById('article-body').innerHTML = article.isi;
   }
 
-  window.onload = loadBeritaDetail;
+  window.onload = async function() {
+    await init();
+    buildLogoAndTitle();
+    buildMenu();
+    buildHeadlineRolling();
+    buildWidgets();
+
+    if(slug) {
+      renderArticle();
+    } else {
+      document.getElementById('article-content').innerHTML = '<p>Selamat datang di Sarjana. Pilih berita dari menu.</p>';
+    }
+
+    // Footer text
+    document.getElementById('footer-text').textContent = configData.FOOTER_TEXT || '© 2025 Sarjana';
+  };
 </script>
 
 </body>
