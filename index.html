@@ -1,32 +1,81 @@
-<!-- Halaman Utama SARJANA -->
-<script>
-const folderId = "1EICpncxbUjDZEJ4vuwuT79OSRMzm2ujD";
-const apiKey = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4"; // kamu bisa pakai API key ini, atau ganti milik sendiri
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SARJANA News</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #1a73e8;
+      text-align: center;
+    }
+    .berita-card {
+      background: #f1f1f1;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 15px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .berita-card img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .berita-card h3 {
+      margin-top: 10px;
+      color: #1a73e8;
+    }
+    .berita-card p {
+      color: #555;
+    }
+    .berita-card small {
+      color: #999;
+    }
+  </style>
+</head>
+<body>
 
-async function loadPosts() {
-  const listUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='application/json'&key=${apiKey}`;
-  const res = await fetch(listUrl);
-  const data = await res.json();
+  <h1>SARJANA NEWS</h1>
+  <div id="berita-container"></div>
 
-  const container = document.getElementById("berita-container");
-  if (!container) return;
+  <script>
+    const folderId = "1EICpncxbUjDZEJ4vuwuT79OSRMzm2ujD";
+    const apiKey = "AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4";
 
-  for (const file of data.files) {
-    const jsonUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`;
-    const jsonRes = await fetch(jsonUrl);
-    const berita = await jsonRes.json();
+    async function loadPosts() {
+      const listUrl = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType='application/json'&key=${apiKey}`;
+      const res = await fetch(listUrl);
+      const data = await res.json();
 
-    const card = document.createElement("div");
-    card.className = "berita-card";
-    card.innerHTML = `
-      <h3><a href="berita.html?slug=${berita.slug}">${berita.judul}</a></h3>
-      <img src="${berita.gambar}" alt="${berita.judul}" style="max-width:100%">
-      <p>${berita.meta_deskripsi}</p>
-      <small>${berita.tanggal}</small>
-    `;
-    container.appendChild(card);
-  }
-}
+      const container = document.getElementById("berita-container");
+      if (!container) return;
 
-window.onload = loadPosts;
-</script>
+      for (const file of data.files) {
+        const jsonUrl = `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&key=${apiKey}`;
+        const jsonRes = await fetch(jsonUrl);
+        const berita = await jsonRes.json();
+
+        const card = document.createElement("div");
+        card.className = "berita-card";
+        card.innerHTML = `
+          <img src="${berita.gambar}" alt="${berita.judul}">
+          <h3><a href="berita.html?slug=${berita.slug}" style="text-decoration:none">${berita.judul}</a></h3>
+          <p>${berita.meta_deskripsi}</p>
+          <small>${berita.tanggal}</small>
+        `;
+        container.appendChild(card);
+      }
+    }
+
+    window.onload = loadPosts;
+  </script>
+
+</body>
+</html>
