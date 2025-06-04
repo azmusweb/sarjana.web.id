@@ -3,41 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BukaKabar Clone</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-    body { background: #f8f9fa; color: #212529; }
-    header { background: #ffffff; padding: 1rem 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    header h1 { color: #1e88e5; font-size: 1.5rem; }
-    nav { margin-top: 0.5rem; }
-    nav a { margin-right: 1rem; color: #1e88e5; text-decoration: none; font-weight: bold; }
-    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
-    .card { background: #ffffff; margin-bottom: 1.5rem; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .card img { width: 100%; height: auto; border-radius: 5px; }
-    .card h2 { font-size: 1.25rem; margin: 0.75rem 0 0.5rem; }
-    .card p { color: #666; font-size: 0.9rem; }
-    footer { background: #ffffff; text-align: center; padding: 1rem; font-size: 0.85rem; margin-top: 2rem; color: #999; }
-  </style>
+  <title>Sarjana News</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>BukaKabar</h1>
+    <h1>Sarjana News</h1>
     <nav>
-      <a href="#">Beranda</a>
-      <a href="#">Nasional</a>
-      <a href="#">Teknologi</a>
-      <a href="#">Hiburan</a>
+      <a href="index.html">Beranda</a>
     </nav>
   </header>
 
-  <div class="container" id="berita-list">
-    <!-- Konten berita akan dimuat di sini -->
-  </div>
+  <div class="container" id="berita-list"></div>
 
-  <footer>
-    &copy; 2025 BukaKabar. All rights reserved.
-  </footer>
+  <footer>© 2025 Sarjana News</footer>
 
   <script>
     const spreadsheetId = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
@@ -62,9 +41,9 @@
           card.className = 'card';
 
           card.innerHTML = `
-            <img src="${data['Gambar'] || ''}" alt="${data['Judul']}" />
+            <img src="${data['Gambar'] || ''}" alt="${data['Judul']}">
             <h2><a href="berita.html?slug=${data['Slug']}" style="text-decoration:none;color:#1e88e5;">${data['Judul']}</a></h2>
-            <p>${data['Body']?.substring(0, 100) || ''}...</p>
+            <p>${(data['Body'] || '').substring(0, 100)}...</p>
           `;
 
           container.appendChild(card);
