@@ -1,21 +1,30 @@
-async function fetchConfig() {
-  const res = await fetchData({ sheet: 'Config' });
-  const rows = res?.data || [];
-  const config = {};
-  rows.forEach(row => {
-    const key = row[0]?.toString().trim();
-    const value = row[1]?.toString().trim();
-    if (key) config[key] = value;
-  });
+const spreadsheetId = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
+const sheetName = 'Live Website';
+const apiKey = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
 
-  // parsing menu jadi array objek [{name, link}, ...]
-  if (config.menu) {
-    config.menu = config.menu.split(',').map(item => {
-      const [name, link] = item.split(':').map(s => s.trim());
-      return { name, link };
+const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?alt=json&key=${apiKey}`;
+
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    const rows = data.values;
+    const headers = rows[0];
+    const beritaList = rows.slice(1);
+    const container = document.getElementById('berita-list');
+
+    beritaList.forEach(row => {
+      const data = {};
+      headers.forEach((h, i) => data[h] = row[i]);
+
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      card.innerHTML = `
+        <img src="${data['Gambar'] || ''}" alt="${data['Judul']}" />
+        <h2><a href="berita.html?slug=${data['Slug']}" style="text-decoration:none;color:#1e88e5;">${data['Judul']}</a></h2>
+        <p>${data['Body']?.substring(0, 100) || ''}...</p>
+      `;
+
+      container.appendChild(card);
     });
-  } else {
-    config.menu = [];
-  }
-  return config;
-}
+  });
