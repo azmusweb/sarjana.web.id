@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html class='ltr' dir='ltr' lang='id'>
 <head>
@@ -1224,64 +1225,5 @@ _WidgetManager._RegisterWidget('_ImageView', new _WidgetInfo('Image2', 'footerid
 _WidgetManager._RegisterWidget('_LinkListView', new _WidgetInfo('LinkList6', 'footerid', document.getElementById('LinkList6'), {}, 'displayModeFull'));
 _WidgetManager._RegisterWidget('_HTMLView', new _WidgetInfo('HTML85', 'add-javascript', document.getElementById('HTML85'), {}, 'displayModeFull'));
 </script>
-<script>
-const sheetID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
-const configSheet = 'Config';
-const beritaSheet = 'Live Website';
-const apiKey = 'AIzaSyDKOClQy1z23Hwjr9HyHmzJbuaPE9Ccbv4';
-
-async function getSheetData(sheetName) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/${sheetName}?key=${apiKey}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const rows = data.values;
-  const headers = rows[0];
-  return rows.slice(1).map(row => {
-    const obj = {};
-    headers.forEach((key, i) => obj[key] = row[i] || '');
-    return obj;
-  });
-}
-
-async function applyConfig() {
-  const config = await getSheetData(configSheet);
-  config.forEach(item => {
-    const fungsi = item['FUNGSI'];
-    const isi = item['WEBSITE'];
-
-    if (fungsi === 'warna') document.documentElement.style.setProperty('--main-color', isi);
-    if (fungsi === 'judul') document.title = isi;
-    if (fungsi === 'logo') {
-      const logo = document.querySelector('.logo');
-      if (logo) logo.src = isi;
-    }
-    if (fungsi === 'menu') {
-      const nav = document.querySelector('.menu-nav');
-      if (nav) nav.innerHTML = isi;
-    }
-    if (fungsi === 'footer') {
-      const footer = document.querySelector('footer');
-      if (footer) footer.innerHTML = isi;
-    }
-  });
-}
-
-async function tampilkanBerita() {
-  const list = await getSheetData(beritaSheet);
-  const kontainer = document.querySelector('.berita-dinamis');
-  if (!kontainer) return;
-  kontainer.innerHTML = list.map(item => `
-    <div class="berita-item">
-      <img src="${item['Gambar']}" alt="${item['Judul']}">
-      <h2><a href="berita.html?slug=${item['Slug']}">${item['Judul']}</a></h2>
-      <p>${item['Meta Deskripsi']}</p>
-    </div>
-  `).join('');
-}
-
-applyConfig();
-tampilkanBerita();
-</script>
-
 </body>
 </html>
