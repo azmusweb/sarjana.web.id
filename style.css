@@ -1,92 +1,118 @@
-/* Global */
-* {
+/* Global Styles */
+body {
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: 'Roboto', sans-serif;
+  background: #f4f4f4;
+  color: #333;
 }
-body {
-  background: #f8f9fa;
-  color: #212529;
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  width: 95%;
+  max-width: 1000px;
+  margin: auto;
+  padding: 1rem;
 }
 
 /* Header */
 header {
-  background: #ffffff;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  background: #1e88e5;
+  color: white;
+  padding: 1rem 0;
+  text-align: center;
 }
+
 header h1 {
-  color: #1e88e5;
-  font-size: 1.5rem;
+  margin: 0;
+  font-size: 1.8rem;
 }
+
 nav {
   margin-top: 0.5rem;
 }
+
 nav a {
-  margin-right: 1rem;
-  color: #1e88e5;
-  text-decoration: none;
+  color: #fff;
+  margin: 0 10px;
   font-weight: bold;
 }
 
-/* Container */
-.container {
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 0 1rem;
+/* Card for index.html */
+.card {
+  background: #fff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
 }
 
-/* Card Berita */
-.card {
-  background: #ffffff;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+.card:hover {
+  transform: scale(1.02);
 }
+
 .card img {
   width: 100%;
-  height: auto;
-  border-radius: 5px;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
 }
+
 .card h2 {
-  font-size: 1.25rem;
-  margin: 0.75rem 0 0.5rem;
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
 }
+
 .card p {
-  color: #666;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: #555;
 }
 
 /* Konten Berita */
-.content img {
+#konten-berita img {
   width: 100%;
-  height: auto;
-  border-radius: 8px;
+  max-height: 400px;
+  object-fit: cover;
   margin-bottom: 1rem;
 }
-.content h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+
+#konten-berita h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
 }
+
 .meta {
   color: #888;
   font-size: 0.9rem;
   margin-bottom: 1rem;
 }
+
 .body {
-  line-height: 1.7;
   font-size: 1.1rem;
-  color: #333;
+  line-height: 1.6;
 }
 
 /* Footer */
 footer {
-  background: #ffffff;
+  background: #1e88e5;
+  color: white;
   text-align: center;
   padding: 1rem;
-  font-size: 0.85rem;
   margin-top: 2rem;
-  color: #999;
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+  .card h2 {
+    font-size: 1rem;
+  }
+
+  .card p, .body {
+    font-size: 0.95rem;
+  }
 }
