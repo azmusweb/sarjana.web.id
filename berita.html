@@ -4,34 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detail Berita</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-    body { background: #f8f9fa; color: #212529; }
-    header { background: #ffffff; padding: 1rem 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    header h1 { color: #1e88e5; font-size: 1.5rem; }
-    .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
-    .content img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; }
-    .content h2 { font-size: 2rem; margin-bottom: 1rem; }
-    .meta { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
-    .body { line-height: 1.7; font-size: 1.1rem; color: #333; }
-    footer { background: #ffffff; text-align: center; padding: 1rem; font-size: 0.85rem; margin-top: 2rem; color: #999; }
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>BukaKabar</h1>
+    <h1>Sarjana News</h1>
+    <nav>
+      <a href="index.html">Beranda</a>
+    </nav>
   </header>
 
-  <div class="container">
-    <div id="konten-berita" class="content">
-      <!-- Konten berita akan dimuat di sini -->
-    </div>
-  </div>
+  <div class="container" id="konten-berita"></div>
 
-  <footer>
-    &copy; 2025 BukaKabar. All rights reserved.
-  </footer>
+  <footer>© 2025 Sarjana News</footer>
 
   <script>
     const urlParams = new URLSearchParams(window.location.search);
