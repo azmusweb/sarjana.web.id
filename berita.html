@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detail Berita</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+    body { background: #f8f9fa; color: #212529; }
+    header { background: #ffffff; padding: 1rem 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    header h1 { color: #1e88e5; font-size: 1.5rem; }
+    .container { max-width: 800px; margin: 2rem auto; padding: 0 1rem; }
+    .content img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 1rem; }
+    .content h2 { font-size: 2rem; margin-bottom: 1rem; }
+    .meta { color: #888; font-size: 0.9rem; margin-bottom: 1rem; }
+    .body { line-height: 1.7; font-size: 1.1rem; color: #333; }
+    footer { background: #ffffff; text-align: center; padding: 1rem; font-size: 0.85rem; margin-top: 2rem; color: #999; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>BukaKabar</h1>
+  </header>
+
+  <div class="container">
+    <div id="konten-berita" class="content">
+      <!-- Konten berita akan dimuat di sini -->
+    </div>
+  </div>
+
+  <footer>
+    &copy; 2025 BukaKabar. All rights reserved.
+  </footer>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const slugParam = urlParams.get('slug');
+
+    const spreadsheetId = 'ISI_ID_SPREADSHEET_KAMU';
+    const sheetName = 'Live Website';
+    const apiKey = 'ISI_API_KEY_KAMU';
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const rows = data.values;
+        const headers = rows[0];
+        const beritaList = rows.slice(1);
+        const konten = document.getElementById('konten-berita');
+
+        const berita = beritaList.find(row => {
+          const indexSlug = headers.indexOf('Slug');
+          return row[indexSlug] === slugParam;
+        });
+
+        if (!berita) {
+          konten.innerHTML = '<p>Berita tidak ditemukan.</p>';
+          return;
+        }
+
+        const dataBerita = {};
+        headers.forEach((h, i) => dataBerita[h] = berita[i]);
+
+        konten.innerHTML = `
+          <img src="${dataBerita['Gambar']}" alt="${dataBerita['Judul']}" />
+          <h2>${dataBerita['Judul']}</h2>
+          <div class="meta">${dataBerita['Tanggal']} - ${dataBerita['Label']}</div>
+          <div class="body">${dataBerita['Body']}</div>
+        `;
+      });
+  </script>
+</body>
+</html>
