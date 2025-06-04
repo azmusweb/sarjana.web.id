@@ -1,9 +1,0 @@
-{
-  "nama_website": "SARJANA",
-  "warna_dominan": "#4285F4",
-  "menu": [
-    {"label": "Beranda", "link": "index.html"},
-    {"label": "Kategori", "link": "#"},
-    {"label": "Tentang", "link": "#"}
-  ]
-}
