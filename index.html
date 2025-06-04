@@ -1,24 +1,75 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sarjana Web ID</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BukaKabar Clone</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
+    body { background: #f8f9fa; color: #212529; }
+    header { background: #ffffff; padding: 1rem 2rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    header h1 { color: #1e88e5; font-size: 1.5rem; }
+    nav { margin-top: 0.5rem; }
+    nav a { margin-right: 1rem; color: #1e88e5; text-decoration: none; font-weight: bold; }
+    .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+    .card { background: #ffffff; margin-bottom: 1.5rem; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .card img { width: 100%; height: auto; border-radius: 5px; }
+    .card h2 { font-size: 1.25rem; margin: 0.75rem 0 0.5rem; }
+    .card p { color: #666; font-size: 0.9rem; }
+    footer { background: #ffffff; text-align: center; padding: 1rem; font-size: 0.85rem; margin-top: 2rem; color: #999; }
+  </style>
 </head>
 <body>
-    <header id="header">
-        <!-- Header/menu akan dirender oleh script.js -->
-    </header>
+  <header>
+    <h1>BukaKabar</h1>
+    <nav>
+      <a href="#">Beranda</a>
+      <a href="#">Nasional</a>
+      <a href="#">Teknologi</a>
+      <a href="#">Hiburan</a>
+    </nav>
+  </header>
 
-    <main id="main-content">
-        <!-- Konten berita dan lainnya akan di-render di sini -->
-    </main>
+  <div class="container" id="berita-list">
+    <!-- Konten berita akan dimuat di sini -->
+  </div>
 
-    <footer id="footer">
-        <!-- Footer akan dirender oleh script.js -->
-    </footer>
+  <footer>
+    &copy; 2025 BukaKabar. All rights reserved.
+  </footer>
 
-    <script src="script.js"></script>
+  <script>
+    const spreadsheetId = 'ISI_ID_SPREADSHEET_KAMU';
+    const sheetName = 'Live Website';
+    const apiKey = 'ISI_API_KEY_KAMU';
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?alt=json&key=${apiKey}`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        const rows = data.values;
+        const headers = rows[0];
+        const beritaList = rows.slice(1);
+        const container = document.getElementById('berita-list');
+
+        beritaList.forEach(row => {
+          const data = {};
+          headers.forEach((h, i) => data[h] = row[i]);
+
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          card.innerHTML = `
+            <img src="${data['Gambar'] || ''}" alt="${data['Judul']}" />
+            <h2><a href="berita.html?slug=${data['Slug']}" style="text-decoration:none;color:#1e88e5;">${data['Judul']}</a></h2>
+            <p>${data['Body']?.substring(0, 100) || ''}...</p>
+          `;
+
+          container.appendChild(card);
+        });
+      });
+  </script>
 </body>
 </html>
