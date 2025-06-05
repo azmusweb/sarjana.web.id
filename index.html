@@ -3,69 +3,108 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Berita - Sarjana</title>
+  <title>Memuat...</title>
   <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background: #f5f5f5; }
-    header, nav, footer { padding: 1rem; background: #1e40af; color: white; }
-    nav a { color: white; margin-right: 15px; text-decoration: none; }
-    main { padding: 1rem; max-width: 800px; margin: auto; }
-    article { background: white; margin-bottom: 1rem; padding: 1rem; border-radius: 6px; }
-    article img { width: 100%; border-radius: 6px; }
-    .meta { font-size: 0.8rem; color: #777; }
+    body { font-family: sans-serif; margin: 0; background: #f5f5f5; }
+    header, nav, main { padding: 16px; }
+    header img { max-height: 40px; }
+    nav { background: #27ae60; color: white; display: flex; gap: 10px; flex-wrap: wrap; }
+    nav .menu-item { position: relative; cursor: pointer; }
+    nav .submenu { display: none; position: absolute; background: white; color: black; top: 100%; left: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+    nav .menu-item:hover .submenu { display: block; }
+    .berita { margin: 20px 0; background: white; padding: 12px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .berita img { max-width: 100%; border-radius: 6px; }
+    .berita h3 { margin-top: 0; }
   </style>
 </head>
 <body>
-  <header id="site-header"><h1 id="site-title">Sarjana</h1></header>
-  <nav id="nav-menu">Memuat menu...</nav>
-  <main id="content">Memuat berita...</main>
-  <footer>&copy; 2025 Sarjana</footer>
+  <header><img id="logo" src="" alt="Logo Website" /></header>
+  <nav id="menu">Memuat menu...</nav>
+  <main id="konten">Memuat konten...</main>
 
   <script>
-    const sheetID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-    const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+    const SHEET_ID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+    const API_KEY = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+    const CONFIG_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Config?key=${API_KEY}`;
+    const DATA_URL = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Live Website?key=${API_KEY}`;
 
-    async function loadConfig() {
-      const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Config?key=${apiKey}`);
-      const { values } = await res.json();
-      values.forEach(([fungsi, isi]) => {
-        if (fungsi.toLowerCase() === "menu") {
-          const menuList = isi.split(",").map(m => `<a href="#">${m.trim()}</a>`).join("");
-          document.getElementById("nav-menu").innerHTML = menuList;
+    async function ambilData(url) {
+      const res = await fetch(url);
+      const json = await res.json();
+      return json.values;
+    }
+
+    function buatMenu(config) {
+      const warna = config.find(r => r[0] === "warna")?.[1] || "#27ae60";
+      const logo = config.find(r => r[0] === "logo")?.[1] || "";
+      const menuUtama = (config.find(r => r[0] === "menu")?.[1] || "").split(",");
+
+      document.querySelector("nav").style.background = warna;
+      document.querySelector("header img").src = logo;
+
+      const menuContainer = document.getElementById("menu");
+      menuContainer.innerHTML = "";
+
+      menuUtama.forEach(m => {
+        const item = document.createElement("div");
+        item.className = "menu-item";
+        item.innerText = m;
+
+        // Submenu
+        const submenuKey = "submenu_" + m.toLowerCase();
+        const submenuData = config.find(r => r[0] === submenuKey)?.[1];
+        if (submenuData) {
+          const submenuEl = document.createElement("div");
+          submenuEl.className = "submenu";
+          submenuData.split(",").forEach(sub => {
+            const subItem = document.createElement("div");
+            subItem.innerText = sub;
+            submenuEl.appendChild(subItem);
+          });
+          item.appendChild(submenuEl);
         }
-        if (fungsi.toLowerCase() === "logo") {
-          document.getElementById("site-title").innerHTML = `<img src="${isi}" height="30" />`;
-        }
-        if (fungsi.toLowerCase() === "warna") {
-          document.querySelector("header").style.background = isi;
-          document.querySelector("nav").style.background = isi;
-        }
+
+        menuContainer.appendChild(item);
       });
     }
 
-    async function loadBerita() {
-      const res = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Live Website?key=${apiKey}`);
-      const { values } = await res.json();
-      const data = values.slice(1); // skip header
-      let html = "";
-      data.forEach(item => {
-        const [judul, label, gambar, isi, slug, deskripsi, view, tanggal, type] = item;
-        if (view.toLowerCase() === "tampilkan") {
-          html += `
-            <article>
-              <a href="berita.html?slug=${slug}" style="text-decoration:none;color:inherit;">
-                <h2>${judul}</h2>
-                <div class="meta">${label} | ${tanggal}</div>
-                <img src="${gambar}" alt="${judul}" />
-                <p>${isi.substring(0, 150)}...</p>
-              </a>
-            </article>`;
-        }
+    function tampilkanBerita(data) {
+      const konten = document.getElementById("konten");
+      konten.innerHTML = "";
+
+      data.slice(1).forEach(row => {
+        if (row[6].toLowerCase() !== "tampil") return;
+
+        const el = document.createElement("div");
+        el.className = "berita";
+        el.innerHTML = `
+          <img src="${row[2]}" alt="${row[0]}">
+          <h3>${row[0]}</h3>
+          <small>${row[7]} | ${row[1]}</small>
+          <p>${row[3].slice(0, 150)}...</p>
+          <a href="${row[4]}">Baca selengkapnya</a>
+        `;
+        konten.appendChild(el);
       });
-      document.getElementById("content").innerHTML = html || "<p>Tidak ada berita tersedia.</p>";
+
+      document.title = "Berita Sarjana";
     }
 
-    loadConfig();
-    loadBerita();
+    async function mulai() {
+      try {
+        const [config, berita] = await Promise.all([
+          ambilData(CONFIG_URL),
+          ambilData(DATA_URL)
+        ]);
+        buatMenu(config);
+        tampilkanBerita(berita);
+      } catch (e) {
+        document.getElementById("konten").innerText = "Gagal memuat data.";
+        console.error("Gagal ambil data:", e);
+      }
+    }
+
+    mulai();
   </script>
 </body>
 </html>
