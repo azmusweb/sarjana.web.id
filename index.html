@@ -2,104 +2,100 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <title>Memuat...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sarjana - Berita</title>
   <style>
-    body { font-family: sans-serif; margin: 0; background: #f9f9f9; }
+    body { font-family: sans-serif; margin: 0; background: #f4f4f4; }
     header { background: #14532d; color: white; padding: 1rem; text-align: center; }
     nav { background: #166534; padding: 0.5rem; text-align: center; }
     nav a { color: white; margin: 0 1rem; text-decoration: none; font-weight: bold; }
     main { max-width: 800px; margin: auto; padding: 1rem; }
-    article { background: white; margin-bottom: 1rem; padding: 1rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-    img { max-width: 100%; border-radius: 5px; }
-    .meta { color: #777; font-size: 0.9rem; margin-top: 0.5rem; }
-    footer { text-align: center; padding: 2rem; font-size: 0.8rem; color: #777; }
+    article { background: white; margin-bottom: 1.5rem; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    img { max-width: 100%; height: auto; border-radius: 4px; }
+    .meta { font-size: 0.85rem; color: #666; margin: 0.5rem 0; }
+    footer { text-align: center; padding: 2rem; font-size: 0.85rem; color: #777; }
   </style>
 </head>
 <body>
   <header>
     <h1 id="site-title">Sarjana</h1>
-    <p>Berita dinamis dari Spreadsheet</p>
+    <p>Memuat konten dari Google Spreadsheet...</p>
   </header>
-
   <nav id="menu-bar">Memuat menu...</nav>
-  <main id="content"><p>Memuat berita...</p></main>
+  <main id="content"><p>Memuat konten...</p></main>
   <footer>&copy; 2025 Sarjana</footer>
 
   <script>
     const sheetID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
     const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
-    const urlSlug = window.location.pathname.split("/").filter(Boolean).pop();
+    const slug = window.location.pathname.split("/").filter(Boolean).pop();
 
-    // Ambil MENU dari sheet CONFIG
+    // Ambil data dari sheet CONFIG
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Config?key=${apiKey}`)
       .then(res => res.json())
       .then(data => {
         const rows = data.values;
-        const menuRow = rows.find(r => r[0].toLowerCase() === "menu");
-        if (menuRow) {
-          const menuItems = menuRow[1].split(",");
-          document.getElementById("menu-bar").innerHTML =
-            menuItems.map(item => `<a href="#">${item.trim()}</a>`).join("");
-        } else {
-          document.getElementById("menu-bar").innerText = "Menu tidak ditemukan.";
-        }
-
-        const warna = rows.find(r => r[0].toLowerCase() === "warna");
-        if (warna) {
-          document.querySelector("header").style.background = warna[1];
-          document.querySelector("nav").style.background = warna[1];
-        }
-
-        const logo = rows.find(r => r[0].toLowerCase() === "logo");
-        if (logo) {
-          document.getElementById("site-title").innerHTML =
-            `<img src="${logo[1]}" alt="Logo" style="height:40px; vertical-align:middle;">`;
-        }
+        rows.forEach(row => {
+          const fungsi = row[0]?.toLowerCase();
+          const nilai = row[1] || "";
+          if (fungsi === "menu") {
+            const menuHTML = nilai.split(",").map(item => `<a href="#">${item.trim()}</a>`).join("");
+            document.getElementById("menu-bar").innerHTML = menuHTML;
+          }
+          if (fungsi === "logo") {
+            document.getElementById("site-title").innerHTML = `<img src="${nilai}" style="height:40px;">`;
+          }
+          if (fungsi === "warna") {
+            document.querySelector("header").style.background = nilai;
+            document.querySelector("nav").style.background = nilai;
+          }
+        });
       });
 
-    // Ambil BERITA dari sheet Live Website
+    // Ambil berita dari sheet Live Website
     fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Live Website?key=${apiKey}`)
       .then(res => res.json())
       .then(data => {
-        const rows = data.values.slice(1); // tanpa header
+        const rows = data.values;
+        const berita = rows.slice(1); // Buang header
         const container = document.getElementById("content");
         container.innerHTML = "";
 
-        if (urlSlug) {
-          const artikel = rows.find(r => r[4] === urlSlug);
+        if (slug) {
+          const artikel = berita.find(r => r[4] === slug);
           if (artikel) {
+            document.title = artikel[0] + " - Sarjana";
             container.innerHTML = `
               <article>
                 <h2>${artikel[0]}</h2>
                 <div class="meta">${artikel[7]} | ${artikel[1]}</div>
-                <img src="${artikel[2]}" alt="">
+                <img src="${artikel[2]}" alt="${artikel[0]}">
                 <p>${artikel[3].replace(/\n/g, "<br>")}</p>
               </article>
             `;
-            document.title = artikel[0] + " - Sarjana";
           } else {
             container.innerHTML = "<p>Berita tidak ditemukan.</p>";
           }
         } else {
-          rows.forEach(r => {
-            if (r[6] !== "tampilkan") return;
-            container.innerHTML += `
-              <article>
-                <a href="/${r[4]}">
-                  <h2>${r[0]}</h2>
-                  <img src="${r[2]}" alt="">
-                  <div class="meta">${r[7]} | ${r[1]}</div>
-                  <p>${r[3].substring(0, 120)}...</p>
-                </a>
-              </article>
-            `;
+          berita.forEach(r => {
+            if (r[6] && r[6].toLowerCase() === "tampilkan") {
+              container.innerHTML += `
+                <article>
+                  <a href="/${r[4]}" style="text-decoration:none; color:inherit;">
+                    <h2>${r[0]}</h2>
+                    <div class="meta">${r[7]} | ${r[1]}</div>
+                    <img src="${r[2]}" alt="${r[0]}">
+                    <p>${r[3].slice(0, 140)}...</p>
+                  </a>
+                </article>
+              `;
+            }
           });
         }
       })
-      .catch(err => {
+      .catch(error => {
         document.getElementById("content").innerHTML = "<p>Gagal memuat berita.</p>";
-        console.error(err);
+        console.error("Gagal ambil data:", error);
       });
   </script>
 </body>
