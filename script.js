@@ -1,0 +1,1 @@
+// Placeholder script.js - semua logika akan diisi kemudian
