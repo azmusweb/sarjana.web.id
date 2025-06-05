@@ -3,114 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Memuat...</title>
+  <title>Sedang Memuat...</title>
   <style>
-    body { margin:0; font-family:sans-serif; background:#f9f9f9; color:#222; }
-    header, nav { padding: 1rem; text-align: center; }
-    header { background-color: #14532d; color: white; }
-    nav { background-color: #166534; }
-    nav a { color: white; margin: 0 1rem; text-decoration: none; font-weight: bold; }
-    main { padding: 1rem; max-width: 800px; margin: auto; }
-    article { background: white; margin-bottom: 2rem; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    img { width: 100%; border-radius: 6px; margin-top: 1rem; }
-    .meta { font-size: 0.85rem; color: #666; margin: 0.5rem 0; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f5f5; }
+    header { background: #14532d; color: white; padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    header img { height: 40px; }
+    nav { background: #166534; padding: 0.5rem; display: flex; flex-wrap: wrap; }
+    nav a { color: white; text-decoration: none; margin-right: 1rem; padding: 0.5rem 0; }
+    nav .submenu { display: none; position: absolute; background: #14532d; margin-top: 0.5rem; }
+    nav .menu-item:hover .submenu { display: block; }
+    main { padding: 1rem; max-width: 900px; margin: auto; }
+    article { background: white; margin-bottom: 2rem; padding: 1rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    article img { width: 100%; border-radius: 6px; margin: 1rem 0; }
+    .meta { font-size: 0.85rem; color: gray; }
     footer { text-align: center; padding: 2rem; font-size: 0.9rem; color: #777; }
+    a { color: inherit; text-decoration: none; }
   </style>
 </head>
 <body>
 
-<header id="site-header">
-  <h1 id="site-title">Memuat...</h1>
+<header>
+  <div id="logo">Memuat...</div>
+  <div id="title">Sarjana</div>
 </header>
-<nav id="nav-menu">Memuat menu...</nav>
-<main id="content">Sedang memuat konten...</main>
+
+<nav id="menu">Memuat menu...</nav>
+
+<main id="konten">Memuat berita...</main>
+
 <footer>&copy; 2025 Sarjana</footer>
 
 <script>
-const sheetID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+  const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+  const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+  const configURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Config?key=${apiKey}`;
+  const beritaURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Live Website?key=${apiKey}`;
 
-// Mendapatkan slug dari URL
-let path = window.location.pathname;
-let slug = path === "/" ? null : path.split("/").filter(Boolean).pop();
+  const konten = document.getElementById("konten");
+  const menuEl = document.getElementById("menu");
+  const logoEl = document.getElementById("logo");
 
-// Ambil data CONFIG
-fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Config?key=${apiKey}`)
-  .then(res => res.json())
-  .then(data => {
-    const rows = data.values || [];
-    rows.forEach(row => {
-      const fungsi = (row[0] || "").toLowerCase();
-      const nilai = row[1] || "";
-      if (fungsi === "logo") {
-        document.getElementById("site-title").innerHTML = `<img src="${nilai}" alt="logo" style="height:40px;">`;
-      }
-      if (fungsi === "warna") {
-        document.querySelector("header").style.background = nilai;
-        document.querySelector("nav").style.background = nilai;
-      }
-      if (fungsi === "menu") {
-        const menuItems = nilai.split(",").map(item => item.trim());
-        document.getElementById("nav-menu").innerHTML =
-          menuItems.map(name => `<a href="#">${name}</a>`).join("");
-      }
-    });
-  })
-  .catch(err => {
-    document.getElementById("nav-menu").innerHTML = "Gagal memuat menu.";
-  });
+  let config = {};
+  let beritaList = [];
 
-// Ambil data berita
-fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Live Website?key=${apiKey}`)
-  .then(res => res.json())
-  .then(data => {
-    const rows = data.values || [];
-    const headers = rows[0];
-    const list = rows.slice(1);
-    const content = document.getElementById("content");
+  function getSlug() {
+    const path = window.location.pathname;
+    if (path === "/" || path === "") return null;
+    return path.split("/").pop();
+  }
 
-    if (!list.length) {
-      content.innerHTML = "<p>Belum ada berita tersedia.</p>";
+  function loadConfig() {
+    return fetch(configURL)
+      .then(res => res.json())
+      .then(json => {
+        (json.values || []).forEach(row => {
+          const key = (row[0] || "").toLowerCase();
+          const val = row[1] || "";
+          config[key] = val;
+        });
+        applyConfig();
+      });
+  }
+
+  function applyConfig() {
+    if (config.logo) {
+      logoEl.innerHTML = `<img src="${config.logo}" alt="logo">`;
+    }
+    if (config.warna) {
+      document.querySelector("header").style.background = config.warna;
+      document.querySelector("nav").style.background = config.warna;
+    }
+    if (config.menu) {
+      const menus = config.menu.split(",").map(m => m.trim());
+      menuEl.innerHTML = menus.map(menu => `<a href="#">${menu}</a>`).join("");
+    }
+  }
+
+  function loadBerita() {
+    return fetch(beritaURL)
+      .then(res => res.json())
+      .then(json => {
+        const rows = json.values || [];
+        const headers = rows[0];
+        beritaList = rows.slice(1).map(row => {
+          return {
+            judul: row[0],
+            label: row[1],
+            gambar: row[2],
+            isi: row[3],
+            slug: row[4],
+            deskripsi: row[5],
+            status: row[6],
+            tanggal: row[7],
+            type: row[8],
+          };
+        });
+      });
+  }
+
+  function tampilkanBeranda() {
+    document.title = "Beranda - Sarjana";
+    const tampil = beritaList.filter(b => (b.status || "").toLowerCase() === "tampilkan");
+    if (!tampil.length) {
+      konten.innerHTML = "<p>Tidak ada berita untuk ditampilkan.</p>";
       return;
     }
+    konten.innerHTML = tampil.map(b => `
+      <article>
+        <a href="/${b.slug}">
+          <h2>${b.judul}</h2>
+          <div class="meta">${b.tanggal} - ${b.label}</div>
+          <img src="${b.gambar}" alt="${b.judul}">
+          <p>${b.isi.slice(0, 160)}...</p>
+        </a>
+      </article>
+    `).join("");
+  }
 
-    if (slug) {
-      const artikel = list.find(r => r[4] === slug);
-      if (!artikel) {
-        content.innerHTML = "<p>Berita tidak ditemukan.</p>";
-        return;
-      }
-      document.title = artikel[0];
-      content.innerHTML = `
-        <article>
-          <h2>${artikel[0]}</h2>
-          <div class="meta">${artikel[7] || ""} | ${artikel[1] || ""}</div>
-          <img src="${artikel[2]}" alt="${artikel[0]}" />
-          <p>${(artikel[3] || "").replace(/\n/g, "<br>")}</p>
-        </article>
-      `;
-    } else {
-      content.innerHTML = "";
-      list.forEach(row => {
-        if (row[6]?.toLowerCase() === "tampilkan") {
-          content.innerHTML += `
-            <article>
-              <a href="/${row[4]}" style="text-decoration:none; color:inherit;">
-                <h2>${row[0]}</h2>
-                <div class="meta">${row[7]} | ${row[1]}</div>
-                <img src="${row[2]}" alt="${row[0]}"/>
-                <p>${(row[3] || "").slice(0, 140)}...</p>
-              </a>
-            </article>
-          `;
-        }
-      });
+  function tampilkanDetail(slug) {
+    const data = beritaList.find(b => b.slug === slug);
+    if (!data) {
+      konten.innerHTML = "<p>Berita tidak ditemukan.</p>";
+      return;
     }
-  })
-  .catch(error => {
-    document.getElementById("content").innerHTML = "<p>Gagal memuat konten.</p>";
-    console.error("Spreadsheet error:", error);
-  });
+    document.title = data.judul;
+    konten.innerHTML = `
+      <article>
+        <h2>${data.judul}</h2>
+        <div class="meta">${data.tanggal} - ${data.label}</div>
+        <img src="${data.gambar}" alt="${data.judul}">
+        <p>${data.isi.replace(/\n/g, "<br>")}</p>
+      </article>
+    `;
+  }
+
+  async function init() {
+    await loadConfig();
+    await loadBerita();
+    const slug = getSlug();
+    if (slug) {
+      tampilkanDetail(slug);
+    } else {
+      tampilkanBeranda();
+    }
+  }
+
+  init();
 </script>
 
 </body>
