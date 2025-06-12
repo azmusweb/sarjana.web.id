@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portal informasi kampus Indonesia - Sarjana.web.id" />
+  <title>Sarjana - Info Kampus Indonesia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f9;
+    }
+    header {
+      background: #146356;
+      color: #fff;
+      padding: 1rem 0;
+    }
+    .search-box {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    .card-campus {
+      border-left: 4px solid #146356;
+    }
+    footer {
+      background: #222;
+      color: #ccc;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="text-center">
+    <div class="container">
+      <h1>Sarjana.web.id</h1>
+      <p class="lead">Portal Informasi Kampus Seluruh Indonesia</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="row justify-content-center search-box">
+      <div class="col-md-8">
+        <input type="text" id="searchInput" class="form-control" placeholder="Cari kampus berdasarkan nama, lokasi, atau website...">
+      </div>
+    </div>
+    <div class="row" id="kampusList"></div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 Sarjana.web.id. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const spreadsheetId = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
+    const apiKey = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
+    const sheetName = 'Live Website';
+
+    async function fetchData() {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${sheetName}?key=${apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
+      const rows = data.values;
+      return rows.slice(1); // skip header
+    }
+
+    function renderKampus(data) {
+      const container = document.getElementById('kampusList');
+      container.innerHTML = '';
+      data.forEach(row => {
+        const [nama, lokasi, website, jurusan, akreditasi, kontak] = row;
+        const html = `
+          <div class="col-md-6 mb-4">
+            <div class="card card-campus shadow-sm">
+              <div class="card-body">
+                <h5 class="card-title text-success">${nama}</h5>
+                <p class="card-text"><i class="fas fa-map-marker-alt"></i> ${lokasi}</p>
+                <p class="card-text"><i class="fas fa-globe"></i> <a href="${website}" target="_blank">${website}</a></p>
+                <p class="card-text"><strong>Jurusan:</strong> ${jurusan || '-'}</p>
+                <p class="card-text"><strong>Akreditasi:</strong> ${akreditasi || '-'}</p>
+                <p class="card-text"><strong>Kontak:</strong> ${kontak || '-'}</p>
+              </div>
+            </div>
+          </div>
+        `;
+        container.innerHTML += html;
+      });
+    }
+
+    function setupSearch(data) {
+      const input = document.getElementById('searchInput');
+      input.addEventListener('input', () => {
+        const keyword = input.value.toLowerCase();
+        const filtered = data.filter(row =>
+          row.some(cell => cell.toLowerCase().includes(keyword))
+        );
+        renderKampus(filtered);
+      });
+    }
+
+    fetchData().then(data => {
+      renderKampus(data);
+      setupSearch(data);
+    });
+  </script>
+</body>
+</html>
