@@ -46,5 +46,56 @@
     <h1 id="judul-website">Website Berita</h1>
   </header>  <nav id="navigasi"></nav>  <section id="berita-list">Memuat berita...</section>  <footer>
     <p id="footer-teks">&copy; 2025</p>
-  </footer>  <script src="utils.js"></script>  <script src="config.js"></script>  <script src="menu.js"></script>  <script src="berita-list.js"></script>  <script src="footer.js"></script></body>
+  </footer>  <script>
+    const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
+    const SHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
+
+    async function ambilSheet(namaSheet) {
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${namaSheet}?key=${API_KEY}`;
+      const res = await fetch(url);
+      const data = await res.json();
+      return data.values;
+    }
+
+    // CONFIG
+    ambilSheet('Config').then(rows => {
+      const config = {};
+      rows.forEach(([k, v]) => config[k] = v);
+      document.title = config['Judul'] || 'Website Berita';
+      document.getElementById('judul-website').textContent = config['Judul'] || 'Website Berita';
+      document.documentElement.style.setProperty('--warna-utama', config['Warna Utama'] || '#228B22');
+      document.documentElement.style.setProperty('--font', config['Font'] || 'Arial, sans-serif');
+    });
+
+    // MENU
+    ambilSheet('Menu').then(rows => {
+      const nav = document.getElementById('navigasi');
+      nav.innerHTML = rows.map(([nama, link]) => `<a href="${link}">${nama}</a>`).join('');
+    });
+
+    // BERITA LIST
+    ambilSheet('Live Website').then(rows => {
+      const list = document.getElementById('berita-list');
+      const berita = rows.slice(1).map(row => {
+        const [judul, label, gambar, isi, slug, meta, view, tanggal, type] = row;
+        return `
+          <div class="berita-item">
+            <h2><a href="berita.html?slug=${slug}">${judul}</a></h2>
+            <p><small>${tanggal} | ${label}</small></p>
+            <img src="${gambar}" alt="${judul}" />
+            <p>${isi.substring(0, 150)}...</p>
+          </div>
+        `;
+      }).join('');
+      list.innerHTML = berita;
+    });
+
+    // FOOTER
+    ambilSheet('Footer').then(rows => {
+      const footer = document.getElementById('footer-teks');
+      rows.forEach(([key, val]) => {
+        if (key.toLowerCase() === 'teks') footer.innerHTML = val;
+      });
+    });
+  </script></body>
 </html>
