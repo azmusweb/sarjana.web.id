@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universitas Majapahit</title>
+    <link rel="stylesheet" href="css/stylesheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+
+     <!-- Font -->
+     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+
+</head>
+<body>
+       
+<!-- menu atas -->
+    <div class="container-fluid menu">
+        <div class="row menu-atas">
+            <div class="col-7 info">
+                <h2>SELAMAT DATANG ADMIN |  <span>UNIVERSITAS MAJAPAHIT</span></h2>
+
+            </div>
+            <div class="col-3">
+                <form class="form-inline search ">
+                    <div class="form-group mb-2 ">
+                        <label for="staticEmail2" class="sr-only ">Search</label>
+                        <input type="text" class="form-control" id="validationTooltip01" placeholder="Search" value="Search" required>
+                     </div>
+                    
+                    <button type="submit" class="btn btn-outline-success mb-2">Search</button>
+                </form>
+            </div>
+                <div class="col-2 icon">
+                    <a href="#"><i class="far fa-envelope"></i></a>
+                    <a href="#"><i class="fas fa-bell"></i></a>
+                    <a href="#"><i class="fas fa-sign-out-alt"></i></a>
+                    
+                </div>
+                
+        </div>
+
+    
+
+<!-- akhir menu atas -->
+
+
+<!-- sidebar menu -->
+    
+   
+        <div class="wrapper">
+            
+            <div class="sidebar-menu">
+                <ul class="sidebar">
+                    <li><a href="home.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+                    <li><a href="daftar-mahasiswa.html"><i class="fas fa-user-graduate"></i>Daftar Mahasiswa</a></li>
+                    <li><a href="daftar-dosen.html"><i class="fas fa-user-tie"></i>Daftar Dosen</a></li>
+                    <li><a href="daftar-pegawai.html"><i class="fas fa-users"></i>Daftar Pegawai</a></li>
+                    <li><a href="jadwal-kuliah.html"><i class="far fa-calendar-alt"></i>Jadwal Kuliah</a></li>
+                    <li><a href="nilai-mhs.html"><i class="fab fa-telegram-plane"></i>Nilai Mahasiswa</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+     
+
+    
+
+            
+            
+        
+
+<!-- akhir sidebar menu -->
+
+
+<!-- dashboard -->
+
+    
+
+        <div class="main-content">
+            <div class="dashboard">
+                <h3><i class="fas fa-user-tie"></i>DAFTAR DOSEN</h3>
+            </div>
+          
+
+           <div class="daftar">
+                <form>
+                
+                    <div class="form-group form-fakultas">
+                        <label for="exampleFormControlSelect1 ">Pilih Fakultas</label>
+                        <select class="form-control " id="exampleFormControlSelect1">
+                            <option>Fakultas Teknik Sipil</option>
+                            <option>Fakultas Teknik Informatika</option>
+                            <option>Fakultas Teknik Mesin</option>
+                            <option>Fakultas Teknik Ekonomi</option>
+                            <option>Fakultas Teknik Hukum</option>
+                            
+                        </select>
+                    </div>
+
+                    
+                    <table class="table">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">Photo</th>
+                            <th scope="col">Nama</th>
+                            <th scope="col">ID</th>
+                            
+                          </tr>
+                        </thead>
+                        
+                        <tbody>
+                          <tr>
+                            <th scope="row"><img src="img/stark.jpg"  width="50"></th>
+                            <td>Muhammad Razi</td>
+                            <td>0123456789</td>
+                            
+                          </tr>
+                          <tr>
+                            <th scope="row"><img src="img/tom.jpg"  width="50"></th>
+                            <td>Maruf Habibie </td>
+                            <td>0129845687</td>
+                            
+                          </tr>
+                          <tr>
+                            <th scope="row"><img src="img/lisa.jpg"  width="50"></th>
+                            <td>Lisana</td>
+                            <td>98456455</td>
+                            
+                          </tr>
+                          <tr>
+                            <th scope="row"><img src="img/alba.jpg"  width="50"></th>
+                            <td>Valina</td>
+                            <td>989845845</td>
+                            
+                          </tr>
+                          <tr>
+                            <th scope="row"><img src="img/emma.jpg"  width="50"></th>
+                            <td>Tifany Aldiana</td>
+                            <td>4568478548</td>
+                            
+                          </tr>
+                        </tbody>
+                      </table>
+                      
+                    
+              </form>
+
+
+           </div>
+
+        </div>
+
+        
+           
+      
+        
+
+
+
+
+    
+
+<!-- akhir dashboard -->
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>

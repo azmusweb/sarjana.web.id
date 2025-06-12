@@ -1,0 +1,416 @@
+* {
+    box-sizing: 0;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+   
+    
+}
+
+
+
+.menu{
+    position: fixed;
+   
+}
+.menu-atas{
+    
+    background-color: #fec900;
+    
+    
+
+}
+.info h2{
+    padding: 1px;
+    font-size: 16px;
+   
+    margin: 10px 0;
+
+}
+.info span{
+    font-weight: bold;
+}
+
+.icon{
+    margin: 10px 0;
+}
+
+.icon i{
+    padding: 0 10px;
+    transform: scale(1.5);
+}
+
+.icon a{
+    text-decoration: none;
+    color: black;
+}
+
+.icon a:hover{
+    
+    color: #eee;
+}
+
+.search{
+    padding: 3px 0;
+}
+
+.wrapper{
+    display: flex;
+  position: relative;
+}
+
+
+.sidebar-menu  {
+    float: left;
+    width: 220px;
+    background-color: #353743;
+    height: 100%;
+    position: fixed;
+    width: 200px;
+    left:  0;
+}
+
+
+.sidebar li{
+    list-style: none;
+    border-bottom: 1px solid #494b57;
+    width: 200px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 20px;
+}
+
+.sidebar li:hover{
+    background-color: #2b303a;
+    
+}
+
+.sidebar i{
+    padding: 0 8px 0 0;
+}
+.sidebar a{
+    text-decoration: none;
+    color: white;
+}
+
+.sidebar a:hover{
+    text-decoration: none;
+    color: #9a9a9a;
+}
+
+
+
+
+
+.main-content{
+    
+    display: inline;
+    margin: 10px;
+    background-color: burlywood;
+   
+}
+
+.dashboard{
+    width:  800px;
+    margin-left: 210px;
+    
+    
+        
+}
+.dashboard h3{
+    font-size: 24px;
+    padding: 20px 0;]
+    
+
+}
+
+.dashboard i{
+    padding: 20px 10px;
+}
+
+
+.konten{
+    margin-left: 250px;
+    width: 1000px;
+    display: flex;
+    
+    
+    
+}
+
+.konten01{
+    flex:1;
+}
+
+
+
+
+.isi01{
+    width: 280px;
+    height: 150px;
+    background-color: #1091ca;
+    color: white;
+    padding: 14px 14px;
+    border-radius: 8px;
+    
+    
+}
+
+.isi01 h3{
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.isi01 h2{
+    font-size: 48px;
+    font-weight: bold;
+    display: inline;
+    
+}
+
+.isi01 a{
+    font-size:  14px;
+    text-decoration: none;
+    color: white;
+}
+
+.isi01 a:hover{
+    text-decoration: none;
+    color: #eee;
+    
+}
+
+.isi01 i{
+    opacity: 50%;
+    float: right;
+    transform: scale(5);
+    margin-right: 25px;
+    margin-top: 30px;
+}
+
+.isi02{
+    width: 280px;
+    height: 150px;
+    background-color: #00a844;
+    color: white;
+    padding: 14px 14px;
+    border-radius: 8px;
+   
+}
+
+.isi02 h3{
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.isi02 h2{
+    font-size: 48px;
+    font-weight: bold;
+    display: inline;
+    
+}
+
+.isi02 a{
+    font-size:  14px;
+    text-decoration: none;
+    color: white;
+}
+
+.isi02 a:hover{
+    text-decoration: none;
+    color: #eee;
+    
+}
+
+.isi02 i{
+    opacity: 50%;
+    float: right;
+    transform: scale(5);
+    margin-right: 25px;
+    margin-top: 30px;
+    
+}
+
+
+.isi03{
+    width: 280px;
+    height: 150px;
+    background-color: #f01c28;
+    color: white;
+    padding: 14px 14px;
+    border-radius: 8px;
+    
+}
+
+.isi03 h3{
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.isi03 h2{
+    font-size: 48px;
+    font-weight: bold;
+    display: inline;
+    
+}
+
+.isi03 a{
+    font-size:  14px;
+    text-decoration: none;
+    color: white;
+}
+
+.isi03 a:hover{
+    text-decoration: none;
+    color: #eee;
+    
+}
+
+.isi03 i{
+    opacity: 50%;
+    float: right;
+    transform: scale(5);
+    margin-right: 40px;
+    margin-top: 30px;
+}
+
+
+.sosmed{
+    margin-left: 250px;
+    width: 1000px;
+    display: flex;
+    margin-top: 25px;
+    
+}
+
+.kontensosmed{   
+    flex:1;
+}
+
+.ig{
+    border: 1px solid rgba(146, 145, 145, 0.933);
+    width: 280px;
+    height: 200px;
+    
+    
+    
+    
+}
+
+.ig01{
+    height: 100px;
+    background-color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.ig01 i{
+    transform: scale(3);
+    color: white;
+}
+
+.ig02 h3{
+    color: red;
+    font-size: 18px;
+    padding-top: 5px;
+}
+
+.ig02 .btn{
+    background-color:red;
+    color: white;
+    
+}
+
+
+.fb{
+    border: 1px solid rgba(146, 145, 145, 0.933);
+    width: 280px;
+    height: 200px;
+    
+    
+}
+
+.fb01{
+    height: 100px;
+    background-color: #118cb6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fb01 i{
+    transform: scale(3);
+    color: white;
+}
+
+.fb02 h3{
+    color: #118cb6;
+    font-size: 18px;
+    padding-top: 5px;
+}
+
+.fb02 .btn{
+    background-color:#118cb6;
+    color: white;
+    
+}
+
+
+.twt{
+    border: 1px solid rgba(146, 145, 145, 0.933);
+    width: 280px;
+    height: 200px;
+    
+    
+}
+
+.twt01{
+    height: 100px;
+    background-color: #4e00f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.twt01 i{
+    transform: scale(3);
+    color: white;
+}
+
+.twt02 h3{
+    color: #4e00f4;
+    font-size: 18px;
+    padding-top: 5px;
+}
+
+.twt02 .btn{
+    background-color:#4e00f4;
+    color: white;
+    
+}
+
+
+
+
+.daftar{
+    margin-left: 250px;
+    width: 1000px;
+    display: flex;
+    
+}
+
+
+.tombol{
+    margin-left: 250px;
+    width: 1000px;
+    display: flex;
+    margin-bottom: 10px;
+    
+}
+
+.form-fakultas{
+    width: 800px;
+    
+}
