@@ -2,101 +2,25 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Portal Kampus Sarjana</title>
-  <style>
-    body { font-family: sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
-    header { background: #0a4d68; color: white; padding: 1rem; }
-    nav ul { list-style: none; display: flex; gap: 1rem; padding: 0; }
-    nav a { color: white; text-decoration: none; }
-    section { padding: 2rem; }
-    .grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
-    .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .card img { width: 100%; height: 150px; object-fit: cover; }
-    .card-content { padding: 1rem; }
-    .card h3 { margin: 0 0 0.5rem; font-size: 1.1rem; }
-    .card p { margin: 0; font-size: 0.9rem; color: #333; }
-  </style>
+  <title>Wikipedia Kampus - Sarjana</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Portal Informasi Kampus Sarjana</h1>
-    <nav><ul id="menu"></ul></nav>
+    <h1>Wikipedia Kampus Indonesia</h1>
+    <div id="nav-container"></div>
   </header>
 
-  <section id="jurusan">
-    <h2>Daftar Jurusan</h2>
-    <div class="grid" id="jurusan-content"></div>
-  </section>
+  <main>
+    <section id="kampus-list">Memuat data kampus...</section>
+  </main>
 
-  <section id="beasiswa">
-    <h2>Informasi Beasiswa</h2>
-    <div class="grid" id="beasiswa-content"></div>
-  </section>
+  <aside id="widget-container"></aside>
 
-  <section id="event">
-    <h2>Event Kampus</h2>
-    <div class="grid" id="event-content"></div>
-  </section>
+  <footer>
+    <p>&copy; 2025 Sarjana.web.id</p>
+  </footer>
 
-  <script>
-    const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
-    const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
-
-    async function loadSheet(sheetName) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      return data.values;
-    }
-
-    function renderMenu(data) {
-      const menu = document.getElementById("menu");
-      data.slice(1).forEach(([label, link]) => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.href = link;
-        a.textContent = label;
-        li.appendChild(a);
-        menu.appendChild(li);
-      });
-    }
-
-    function renderCards(targetId, data, columns) {
-      const container = document.getElementById(targetId);
-      data.slice(1).forEach(row => {
-        const card = document.createElement("div");
-        card.className = "card";
-        const img = document.createElement("img");
-        img.src = row[columns.img] || "https://via.placeholder.com/300x200";
-        const content = document.createElement("div");
-        content.className = "card-content";
-        const h3 = document.createElement("h3");
-        h3.textContent = row[columns.title];
-        const p = document.createElement("p");
-        p.textContent = row[columns.desc];
-        content.appendChild(h3);
-        content.appendChild(p);
-        card.appendChild(img);
-        card.appendChild(content);
-        container.appendChild(card);
-      });
-    }
-
-    async function init() {
-      const [menu, jurusan, beasiswa, event] = await Promise.all([
-        loadSheet("Menu"),
-        loadSheet("Jurusan"),
-        loadSheet("Beasiswa"),
-        loadSheet("Event")
-      ]);
-      renderMenu(menu);
-      renderCards("jurusan-content", jurusan, { title: 0, desc: 1, img: 2 });
-      renderCards("beasiswa-content", beasiswa, { title: 0, desc: 1, img: 2 });
-      renderCards("event-content", event, { title: 0, desc: 2, img: 3 });
-    }
-
-    init();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
