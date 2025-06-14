@@ -1,76 +1,27 @@
-async function ambilSheet(sheetName) {
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.values;
-}
+<script src="script-utility.js"></script>
+<script src="script-search-filter.js"></script>
+<script>
+  const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+  const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+  const configSheet = 'CONFIG';
+  const contentSheet = 'KONTEN';
 
-function buatMenu(menuData) {
-  const nav = document.getElementById('menu');
-  const list = document.createElement('ul');
-  menuData.forEach(item => {
-    const li = document.createElement('li');
-    const a = document.createElement('a');
-    a.href = '#';
-    a.textContent = item;
-    li.appendChild(a);
-    list.appendChild(li);
-  });
-  nav.appendChild(list);
-}
+  async function inisialisasi() {
+    const config = await ambilSheet(configSheet);
+    const konten = await ambilSheet(contentSheet);
 
-function tampilkanBerita(data) {
-  const container = document.getElementById('konten-berita');
-  const [header, ...konten] = data;
-  konten.forEach(row => {
-    const artikel = document.createElement('article');
-    artikel.innerHTML = `
-      <h2>${row[0]}</h2>
-      <img src="${row[2]}" alt="${row[0]}" style="width:100%;max-height:300px;object-fit:cover;" />
-      <p>${row[3].substring(0, 200)}...</p>
-      <a href="#">Selengkapnya</a>
-    `;
-    container.appendChild(artikel);
-  });
-}
+    const dataConfig = {};
+    config.forEach(([fungsi, isi]) => dataConfig[fungsi] = isi);
 
-function tampilkanSidebar(widget) {
-  const aside = document.getElementById('sidebar');
-  aside.innerHTML = widget;
-}
+    document.body.style.backgroundColor = dataConfig['warna_dasar'] || '#f5f5f5';
+    document.getElementById('logo').src = dataConfig['logo'];
+    const menuArray = dataConfig['menu'].split(';');
+    buatMenu(menuArray);
+    tampilkanSidebar(dataConfig['iklan_sidebar'] || '');
+    tampilkanFooter(dataConfig['footer_teks'] || '');
 
-function tampilkanFooter(footerText) {
-  document.getElementById('footer').innerHTML = footerText;
-}
+    tampilkanPencarianDanFilter(konten);
+  }
 
-async function inisialisasi() {
-  const config = await ambilSheet(configSheet);
-  const konten = await ambilSheet(contentSheet);
-  const dataConfig = {};
-  config.forEach(([fungsi, isi]) => {
-    dataConfig[fungsi] = isi;
-  });
-
-  // Terapkan konfigurasi
-  document.body.style.backgroundColor = dataConfig['warna_dasar'] || '#f5f5f5';
-  document.body.style.color = dataConfig['warna_teks'] || '#333';
-  document.querySelector('link[rel=\"icon\"]').href = dataConfig['favicon'] || '';
-
-  // Logo
-  document.getElementById('logo').src = dataConfig['logo'];
-
-  // Menu
-  const menuArray = dataConfig['menu'].split(';');
-  buatMenu(menuArray);
-
-  // Sidebar
-  tampilkanSidebar(dataConfig['iklan_sidebar'] || '');
-
-  // Footer
-  tampilkanFooter(dataConfig['footer_teks'] || '');
-
-  // Konten berita
-  tampilkanBerita(konten);
-}
-
-inisialisasi();
+  inisialisasi();
+</script>
