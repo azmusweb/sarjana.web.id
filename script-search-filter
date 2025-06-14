@@ -1,42 +1,17 @@
 // script-search-filter.js
 
-async function tampilkanPencarianDanFilter(data) {
-  const [header, ...rows] = data;
-  const indexJudul = header.indexOf("Judul");
-  const indexLabel = header.indexOf("Label");
-  const indexSlug = header.indexOf("Slug");
-  const indexGambar = header.indexOf("Gambar");
-  const indexIsi = header.indexOf("Body");
+// Ambil parameter dari URL
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
 
-  const container = document.getElementById('konten-berita');
-  container.innerHTML = '';
-
-  const params = new URLSearchParams(window.location.search);
-  const keyword = params.get('q');
-  const kategori = params.get('kategori');
-
-  const hasil = rows.filter(row => {
-    const judul = row[indexJudul] || "";
-    const label = row[indexLabel] || "";
-    const isi = row[indexIsi] || "";
-    return (
-      (!keyword || judul.toLowerCase().includes(keyword.toLowerCase()) || isi.toLowerCase().includes(keyword.toLowerCase())) &&
-      (!kategori || label.toLowerCase().includes(kategori.toLowerCase().replace(/-/g, ' ')))
-    );
-  });
-
-  if (hasil.length === 0) {
-    container.innerHTML = '<p>Tidak ditemukan hasil yang sesuai.</p>';
-    return;
-  }
-
-  hasil.forEach(row => {
-    const artikel = document.createElement('article');
-    artikel.innerHTML = `
-      <h2><a href="berita.html?slug=${row[indexSlug]}">${row[indexJudul]}</a></h2>
-      <img src="${row[indexGambar]}" style="width:100%;max-height:250px;object-fit:cover" alt="${row[indexJudul]}">
-      <p>${row[indexIsi].substring(0, 200)}...</p>
-    `;
-    container.appendChild(artikel);
-  });
+// Filter data berdasarkan kata kunci pencarian
+function filterByKeyword(data, keyword) {
+  if (!keyword) return data;
+  const lowerKeyword = keyword.toLowerCase();
+  return data.filter(item =>
+    item.judul.toLowerCase().includes(lowerKeyword) ||
+    item.body.toLowerCase().includes(lowerKeyword)
+  );
 }
