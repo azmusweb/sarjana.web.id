@@ -17,20 +17,24 @@
     </div>
     <nav id="menu"></nav>
   </header>
-<form action="index.html" method="GET" style="padding: 1rem;">
-  <input type="text" name="q" placeholder="Cari berita..." style="padding:8px;width:70%;">
-  <button type="submit" style="padding:8px;">Cari</button>
-</form>
+
+  <form action="index.html" method="GET" style="padding: 1rem;">
+    <input type="text" name="q" placeholder="Cari berita..." style="padding:8px;width:70%;">
+    <button type="submit" style="padding:8px;">Cari</button>
+  </form>
 
   <main>
     <section id="headline"></section>
-    <section id="konten-berita"></section>
+    <section id="konten-berita"><p>Memuat berita...</p></section>
   </main>
 
   <aside id="sidebar"></aside>
 
   <footer id="footer"></footer>
 
+  <!-- Script urut sesuai rekomendasi -->
+  <script src="script-utility.js"></script>
+  <script src="script-search-filter.js"></script>
   <script>
     const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
     const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
