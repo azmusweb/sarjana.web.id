@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="id">
+<!DOCTYPE html>
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,7 +28,7 @@
       text-decoration: none;
       color: #333;
     }
-    #berita-list {
+    #home-section, #berita-list {
       padding: 1rem;
     }
     .berita-item {
@@ -39,14 +40,49 @@
       max-width: 100%;
       height: auto;
     }
+    .breaking-news {
+      background: #f44336;
+      color: white;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 1rem;
+    }
+    .slide {
+      min-width: 300px;
+      background: #f5f5f5;
+      padding: 0.5rem;
+      border-radius: 5px;
+    }
+    .slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
   </style>
 </head>
 <body>
   <header>
     <h1 id="judul-website">Website Berita</h1>
-  </header>  <nav id="navigasi"></nav>  <section id="berita-list">Memuat berita...</section>  <footer>
+  </header>
+
+  <nav id="navigasi"></nav>
+
+  <!-- Home Section (slider dan breaking news) -->
+  <div id="home-section"></div>
+
+  <!-- Daftar Berita -->
+  <section id="berita-list">Memuat berita...</section>
+
+  <footer>
     <p id="footer-teks">&copy; 2025</p>
-  </footer>  <script>
+  </footer>
+
+  <script>
     const API_KEY = 'AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs';
     const SHEET_ID = '1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww';
 
@@ -56,46 +92,11 @@
       const data = await res.json();
       return data.values;
     }
-
-    // CONFIG
-    ambilSheet('Config').then(rows => {
-      const config = {};
-      rows.forEach(([k, v]) => config[k] = v);
-      document.title = config['Judul'] || 'Website Berita';
-      document.getElementById('judul-website').textContent = config['Judul'] || 'Website Berita';
-      document.documentElement.style.setProperty('--warna-utama', config['Warna Utama'] || '#228B22');
-      document.documentElement.style.setProperty('--font', config['Font'] || 'Arial, sans-serif');
-    });
-
-    // MENU
-    ambilSheet('Menu').then(rows => {
-      const nav = document.getElementById('navigasi');
-      nav.innerHTML = rows.map(([nama, link]) => `<a href="${link}">${nama}</a>`).join('');
-    });
-
-    // BERITA LIST
-    ambilSheet('Live Website').then(rows => {
-      const list = document.getElementById('berita-list');
-      const berita = rows.slice(1).map(row => {
-        const [judul, label, gambar, isi, slug, meta, view, tanggal, type] = row;
-        return `
-          <div class="berita-item">
-            <h2><a href="berita.html?slug=${slug}">${judul}</a></h2>
-            <p><small>${tanggal} | ${label}</small></p>
-            <img src="${gambar}" alt="${judul}" />
-            <p>${isi.substring(0, 150)}...</p>
-          </div>
-        `;
-      }).join('');
-      list.innerHTML = berita;
-    });
-
-    // FOOTER
-    ambilSheet('Footer').then(rows => {
-      const footer = document.getElementById('footer-teks');
-      rows.forEach(([key, val]) => {
-        if (key.toLowerCase() === 'teks') footer.innerHTML = val;
-      });
-    });
-  </script></body>
+  </script>
+  <script src="config.js"></script>
+  <script src="menu.js"></script>
+  <script src="home-section.js"></script>
+  <script src="berita-list.js"></script>
+  <script src="footer.js"></script>
+</body>
 </html>
