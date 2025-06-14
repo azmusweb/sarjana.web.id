@@ -3,67 +3,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detail Berita - Sarjana</title>
-  <meta name="description" content="Baca berita terbaru seputar kampus, pendidikan, dan beasiswa.">
-  <link rel="stylesheet" href="style.css">
+  <title>Berita</title>
+  <style>
+    :root {
+      --primary-color: #2c7a7b;
+    }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+    header, footer {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 1rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    article {
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+    img {
+      max-width: 100%;
+      margin: 1rem 0;
+    }
+    .meta {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    a {
+      color: var(--primary-color);
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="logo">
-      <a href="index.html"><img id="logo" src="" alt="Logo Sarjana"></a>
-    </div>
-    <nav id="menu"></nav>
+    <h1 id="site-title">Sarjana</h1>
   </header>
 
   <main>
-    <article id="konten-berita"></article>
+    <article>
+      <h1 id="judul">Memuat...</h1>
+      <p class="meta" id="meta"></p>
+      <img id="gambar" alt="">
+      <div id="body"></div>
+    </article>
   </main>
 
-  <aside id="sidebar"></aside>
-  <footer id="footer"></footer>
+  <footer>
+    &copy; <span id="year"></span> <span id="site-title-footer">Sarjana</span>
+  </footer>
 
-  <script src="script-utility.js"></script>
   <script>
-    const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+    const sheetID = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
     const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
-    const contentSheet = 'KONTEN';
 
-    const slug = new URLSearchParams(window.location.search).get("slug");
-    const apiURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${contentSheet}?key=${apiKey}`;
+    const configQuery = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Config?key=${apiKey}`;
+    const beritaQuery = `https://sheets.googleapis.com/v4/spreadsheets/${sheetID}/values/Live Website?key=${apiKey}`;
 
-    fetch(apiURL)
-      .then(res => res.json())
-      .then(data => {
-        const [header, ...rows] = data.values;
-        const berita = rows.map(row => {
-          return {
-            judul: row[0],
-            label: row[1],
-            gambar: row[2],
-            body: row[3],
-            slug: row[4],
-            meta: row[5],
-            view: row[6],
-            tanggal: row[7],
-            tipe: row[8]
-          };
-        }).find(item => item.slug === slug);
+    function getSlug() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('slug');
+    }
 
-        if (!berita) {
-          document.getElementById("konten-berita").innerHTML = `<p>Berita tidak ditemukan.</p>`;
-          return;
-        }
+    async function loadConfig() {
+      const res = await fetch(configQuery);
+      const data = await res.json();
+      const rows = data.values.slice(1);
+      const config = {};
+      rows.forEach(([key, value]) => config[key.toLowerCase()] = value);
 
-        document.title = berita.judul + " - Sarjana";
-        document.querySelector("meta[name='description']").setAttribute("content", berita.meta);
+      document.querySelector("#site-title").textContent = config["judul web"] || "Website";
+      document.querySelector("#site-title-footer").textContent = config["judul web"] || "Website";
+      document.documentElement.style.setProperty('--primary-color', config["warna utama"] || '#2c7a7b');
+    }
 
-        document.getElementById("konten-berita").innerHTML = `
-          <h1>${berita.judul}</h1>
-          <p class="tanggal">${formatTanggal(berita.tanggal)}</p>
-          <img src="${berita.gambar}" alt="${berita.judul}" class="gambar-utama">
-          <div class="isi-berita">${berita.body}</div>
-        `;
-      });
+    async function loadBerita() {
+      const slug = getSlug();
+      if (!slug) return;
+
+      const res = await fetch(beritaQuery);
+      const data = await res.json();
+      const rows = data.values.slice(1);
+      const berita = rows.find(r => r[4] === slug);
+
+      if (!berita) {
+        document.getElementById("judul").textContent = "Berita tidak ditemukan.";
+        return;
+      }
+
+      const [judul, label, gambar, body, , , , tgl, type] = berita;
+      document.getElementById("judul").textContent = judul;
+      document.getElementById("meta").textContent = `${label} | ${tgl} | ${type}`;
+      document.getElementById("gambar").src = gambar;
+      document.getElementById("gambar").alt = judul;
+      document.getElementById("body").innerHTML = body;
+    }
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+    loadConfig();
+    loadBerita();
   </script>
 </body>
 </html>
