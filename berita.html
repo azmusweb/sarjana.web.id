@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Halaman Berita - Sarjana.web.id">
+  <meta name="keywords" content="berita, kampus, artikel, sarjana">
+  <meta name="author" content="Sarjana">
+  <link rel="icon" href="https://sarjana.web.id/favicon.ico" type="image/x-icon">
+  <title>Detail Berita - Sarjana</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <img id="logo" src="" alt="Logo Sarjana">
+    </div>
+    <nav id="menu"></nav>
+  </header>
+
+  <main>
+    <article id="detail-berita"></article>
+  </main>
+
+  <aside id="sidebar"></aside>
+
+  <footer id="footer"></footer>
+
+  <script>
+    const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
+    const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
+    const configSheet = 'CONFIG';
+    const contentSheet = 'KONTEN';
+    const slug = new URLSearchParams(window.location.search).get('slug');
+  </script>
+  <script src="script-detail.js"></script>
+</body>
+</html>
