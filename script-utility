@@ -1,0 +1,31 @@
+// script-utility.js
+
+async function ambilSheet(sheetName) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.values;
+}
+
+function buatMenu(menuData) {
+  const nav = document.getElementById('menu');
+  const list = document.createElement('ul');
+  menuData.forEach(item => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = `?kategori=${item.toLowerCase().replace(/\s+/g, '-')}`;
+    a.textContent = item;
+    li.appendChild(a);
+    list.appendChild(li);
+  });
+  nav.appendChild(list);
+}
+
+function tampilkanSidebar(widget) {
+  const aside = document.getElementById('sidebar');
+  aside.innerHTML = widget;
+}
+
+function tampilkanFooter(footerText) {
+  document.getElementById('footer').innerHTML = footerText;
+}
