@@ -3,36 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Halaman Berita - Sarjana.web.id">
-  <meta name="keywords" content="berita, kampus, artikel, sarjana">
-  <meta name="author" content="Sarjana">
-  <link rel="icon" href="https://sarjana.web.id/favicon.ico" type="image/x-icon">
   <title>Detail Berita - Sarjana</title>
+  <meta name="description" content="Baca berita terbaru seputar kampus, pendidikan, dan beasiswa.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
     <div class="logo">
-      <img id="logo" src="" alt="Logo Sarjana">
+      <a href="index.html"><img id="logo" src="" alt="Logo Sarjana"></a>
     </div>
     <nav id="menu"></nav>
   </header>
 
   <main>
-    <article id="detail-berita"></article>
+    <article id="konten-berita"></article>
   </main>
 
   <aside id="sidebar"></aside>
-
   <footer id="footer"></footer>
 
+  <script src="script-utility.js"></script>
   <script>
     const sheetId = "1oMHeKOF2_D6deuV8T1l10_GB0wgsPGLV7WrPcJ6Qxww";
     const apiKey = "AIzaSyCaI7qUmiyzqkZG6KLDifcfMGQ_jqcWyxs";
-    const configSheet = 'CONFIG';
     const contentSheet = 'KONTEN';
-    const slug = new URLSearchParams(window.location.search).get('slug');
+
+    const slug = new URLSearchParams(window.location.search).get("slug");
+    const apiURL = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${contentSheet}?key=${apiKey}`;
+
+    fetch(apiURL)
+      .then(res => res.json())
+      .then(data => {
+        const [header, ...rows] = data.values;
+        const berita = rows.map(row => {
+          return {
+            judul: row[0],
+            label: row[1],
+            gambar: row[2],
+            body: row[3],
+            slug: row[4],
+            meta: row[5],
+            view: row[6],
+            tanggal: row[7],
+            tipe: row[8]
+          };
+        }).find(item => item.slug === slug);
+
+        if (!berita) {
+          document.getElementById("konten-berita").innerHTML = `<p>Berita tidak ditemukan.</p>`;
+          return;
+        }
+
+        document.title = berita.judul + " - Sarjana";
+        document.querySelector("meta[name='description']").setAttribute("content", berita.meta);
+
+        document.getElementById("konten-berita").innerHTML = `
+          <h1>${berita.judul}</h1>
+          <p class="tanggal">${formatTanggal(berita.tanggal)}</p>
+          <img src="${berita.gambar}" alt="${berita.judul}" class="gambar-utama">
+          <div class="isi-berita">${berita.body}</div>
+        `;
+      });
   </script>
-  <script src="script-detail.js"></script>
 </body>
 </html>
